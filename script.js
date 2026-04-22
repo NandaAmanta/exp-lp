@@ -57,7 +57,7 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-document.querySelectorAll('.service-card, .portfolio-item, .section-header').forEach(el => {
+document.querySelectorAll('.service-card, .portfolio-item, .section-header, .testimonial-card, .blog-card').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
     el.style.transition = 'all 0.6s ease-out';
@@ -150,4 +150,5 @@ function createParticleAnimation(canvasId, sectionSelector) {
 createParticleAnimation('hero-canvas', '.hero');
 createParticleAnimation('services-canvas', '#services');
 createParticleAnimation('portfolio-canvas', '#portfolio');
+createParticleAnimation('blog-canvas', '#blog');
 

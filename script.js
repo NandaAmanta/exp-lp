@@ -152,3 +152,87 @@ createParticleAnimation('services-canvas', '#services');
 createParticleAnimation('portfolio-canvas', '#portfolio');
 createParticleAnimation('blog-canvas', '#blog');
 
+// Fetch Medium Articles
+async function fetchMediumArticles() {
+    const container = document.getElementById('medium-articles');
+    if (!container) return;
+
+    const RSS_URL = 'https://medium.com/feed/@expdigitalsolution';
+    const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
+
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        if (data.status === 'ok') {
+            container.innerHTML = ''; // Clear loading state
+            
+            data.items.slice(0, 3).forEach((item, index) => {
+                // Extract image from description or use thumbnail
+                let imgUrl = item.thumbnail;
+                if (!imgUrl || imgUrl.includes('stat?event')) {
+                    const doc = new DOMParser().parseFromString(item.description, 'text/html');
+                    const img = doc.querySelector('img');
+                    imgUrl = img ? img.src : 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800&sat=-100';
+                }
+
+                const date = new Date(item.pubDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                // Create a clean description (strip HTML and limit length)
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = item.description;
+                const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                const shortDesc = cleanText.substring(0, 120) + '...';
+
+                const articleCard = document.createElement('div');
+                articleCard.className = 'blog-card reveal';
+                articleCard.style.transitionDelay = `${index * 100}ms`;
+                articleCard.style.opacity = '0';
+                articleCard.style.transform = 'translateY(30px)';
+                articleCard.style.transition = 'all 0.6s ease-out';
+
+                articleCard.innerHTML = `
+                    <div class="blog-img">
+                        <img src="${imgUrl}" alt="${item.title}">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-tag">Article</div>
+                        <h3>${item.title}</h3>
+                        <p>${shortDesc}</p>
+                        <div class="blog-footer">
+                            <span class="blog-date">${date}</span>
+                            <a href="${item.link}" target="_blank" class="read-more">
+                                Read More <i data-lucide="arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(articleCard);
+                
+                // Initialize Lucide icons for the new card
+                lucide.createIcons();
+                
+                // Observe for reveal animation
+                observer.observe(articleCard);
+            });
+        } else {
+            throw new Error('Failed to fetch articles');
+        }
+    } catch (error) {
+        console.error('Error fetching Medium articles:', error);
+        container.innerHTML = `
+            <div class="loading-state">
+                <p>Unable to load articles. Please <a href="https://expdigitalsolution.medium.com/" target="_blank" style="color: var(--primary);">visit our Medium directly</a>.</p>
+            </div>
+        `;
+    }
+}
+
+// Call the function
+fetchMediumArticles();
+

@@ -205,7 +205,7 @@ async function fetchMediumArticles() {
                         <p>${shortDesc}</p>
                         <div class="blog-footer">
                             <span class="blog-date">${date}</span>
-                            <a href="${item.link}" target="_blank" class="read-more">
+                            <a href="${item.link}" target="_blank" class="read-more btn-medium">
                                 Read More <i data-lucide="arrow-right"></i>
                             </a>
                         </div>

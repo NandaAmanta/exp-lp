@@ -295,18 +295,42 @@ section {
     margin-bottom: 40px;
 }
 
-.clients-grid {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 30px;
-    align-items: center;
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
+.logos-slider {
+    overflow: hidden;
+    padding: 20px 0;
+    white-space: nowrap;
+    position: relative;
 }
 
-.clients-grid:hover {
-    opacity: 1;
+/* Gradient fades for the edges */
+.logos-slider::before,
+.logos-slider::after {
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    content: "";
+    z-index: 2;
+}
+
+.logos-slider::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-card), transparent);
+}
+
+.logos-slider::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-card), transparent);
+}
+
+.logos-slider:hover .logos-slide {
+    animation-play-state: paused;
+}
+
+.logos-slide {
+    display: inline-flex;
+    align-items: center;
+    animation: 40s slide infinite linear;
 }
 
 .client-logo {
@@ -314,6 +338,7 @@ section {
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    margin: 0 40px;
 }
 
 .client-logo img {
@@ -325,7 +350,7 @@ section {
 }
 
 .client-name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -344,6 +369,15 @@ section {
     opacity: 1;
     transform: translateY(0);
     color: var(--primary);
+}
+
+@keyframes slide {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
 }
 
 /* Services */
@@ -808,10 +842,6 @@ footer {
     }
     .portfolio-grid {
         grid-template-columns: 1fr;
-    }
-    .clients-grid {
-        flex-direction: column;
-        gap: 40px;
     }
     .footer-content {
         flex-direction: column;

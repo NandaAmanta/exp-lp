@@ -354,163 +354,112 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 // ============================
-// 3D Procedural Tech Globe (3D Projection Engine - 100% Offline & CORS Free)
+// Photorealistic 3D WebGL Earth Globe (Three.js - Performance & Offline Safe)
+// ============================
+// ============================
+// Photorealistic 3D WebGL Earth Globe (Three.js - Pure Colors & High Detail)
 // ============================
 (function init3DEarthGlobe() {
     const canvas = document.getElementById('earth-canvas');
     const section = document.getElementById('about');
-    if (!canvas || !section) return;
+    if (!canvas || !section || typeof THREE === 'undefined') return;
 
-    const ctx = canvas.getContext('2d');
-    let width = 440, height = 440;
-    let animId = null;
+    let renderer, scene, camera, globeGroup, globeMesh, animId;
     let isVisible = false;
-    let rotationY = 0;
-    const tiltZ = 0.38; // ~22 degrees axis tilt
 
-    // Generate 3D points for Earth Globe (Landmass clusters + grid)
-    const points = [];
-    const radius = 170;
-
-    // 1. Latitude / Longitude Grid Rings
-    for (let lat = -75; lat <= 75; lat += 25) {
-        const radLat = (lat * Math.PI) / 180;
-        const rLat = Math.cos(radLat) * radius;
-        const yLat = Math.sin(radLat) * radius;
-        const numDots = Math.floor(rLat * 0.35);
-        for (let i = 0; i < numDots; i++) {
-            const lon = (i / numDots) * Math.PI * 2;
-            points.push({
-                x: Math.cos(lon) * rLat,
-                y: yLat,
-                z: Math.sin(lon) * rLat,
-                type: 'grid'
-            });
-        }
-    }
-
-    // 2. Continents Dot Clusters (Landmass coordinates approximation)
-    const landmasses = [
-        // Asia / Indonesia / Bali region
-        { lat: 10, lon: 110, size: 30 }, { lat: -5, lon: 115, size: 22 }, { lat: 35, lon: 100, size: 34 },
-        { lat: 30, lon: 135, size: 24 }, { lat: 20, lon: 80, size: 28 },
-        // Europe / Middle East / Africa
-        { lat: 50, lon: 15, size: 26 }, { lat: 40, lon: -5, size: 22 }, { lat: 0, lon: 20, size: 32 },
-        { lat: -20, lon: 25, size: 24 }, { lat: 25, lon: 45, size: 24 },
-        // North & South Americas
-        { lat: 40, lon: -100, size: 32 }, { lat: 20, lon: -100, size: 22 }, { lat: -15, lon: -60, size: 30 },
-        { lat: -35, lon: -65, size: 20 },
-        // Australia
-        { lat: -25, lon: 135, size: 26 }
-    ];
-
-    landmasses.forEach(land => {
-        const centerLat = (land.lat * Math.PI) / 180;
-        const centerLon = (land.lon * Math.PI) / 180;
-        for (let i = 0; i < land.size * 7; i++) {
-            const dLat = (Math.random() - 0.5) * 0.48;
-            const dLon = (Math.random() - 0.5) * 0.58;
-            const lat = centerLat + dLat;
-            const lon = centerLon + dLon;
-            const rLat = Math.cos(lat) * radius;
-            points.push({
-                x: Math.cos(lon) * rLat,
-                y: Math.sin(lat) * radius,
-                z: Math.sin(lon) * rLat,
-                type: 'land'
-            });
-        }
-    });
-
-    function resize() {
+    function init() {
         const container = canvas.parentElement;
-        width = canvas.width = container.clientWidth || 440;
-        height = canvas.height = container.clientHeight || 440;
+        const width  = container.clientWidth  || 720;
+        const height = container.clientHeight || 720;
+
+        // Scene & Camera
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        camera.position.z = 4.2;
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            alpha: true,
+            antialias: true,
+            powerPreference: 'high-performance'
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+        // Group for tilt & rotation
+        globeGroup = new THREE.Group();
+        globeGroup.rotation.z = 0.41; // ~23.5 degrees axis tilt
+        scene.add(globeGroup);
+
+        // Photorealistic Earth Material (Pure white base color so Earth map texture shows in 100% true natural colors)
+        const material = new THREE.MeshPhongMaterial({
+            color: 0xffffff,
+            specular: 0x333333,
+            shininess: 15
+        });
+
+        // Texture loading (HTML Image fallback for 100% file:// compatibility)
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(
+            'assets/earth_globe.jpg',
+            function(texture) {
+                material.map = texture;
+                material.needsUpdate = true;
+            },
+            undefined,
+            function() {
+                // Fallback via HTML Image element
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    const tex = new THREE.Texture(img);
+                    tex.needsUpdate = true;
+                    material.map = tex;
+                    material.needsUpdate = true;
+                };
+                img.src = 'assets/earth_globe.jpg';
+            }
+        );
+
+        // 1. High Detail Earth Sphere Mesh (64x64 segments)
+        const geometry = new THREE.SphereGeometry(1.85, 64, 64);
+        globeMesh = new THREE.Mesh(geometry, material);
+        globeGroup.add(globeMesh);
+
+        // 2. Subtle Amber Outer Atmosphere Rim
+        const atmosGeo = new THREE.SphereGeometry(1.88, 48, 48);
+        const atmosMat = new THREE.MeshBasicMaterial({
+            color: 0xf59e0b,
+            transparent: true,
+            opacity: 0.12,
+            side: THREE.BackSide
+        });
+        const atmosMesh = new THREE.Mesh(atmosGeo, atmosMat);
+        globeGroup.add(atmosMesh);
+
+        // Pure Sunlight Lighting Setup (White sunlight so texture colors show crisp and true)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        sunLight.position.set(5, 3, 5);
+        scene.add(sunLight);
+
+        const rimLight = new THREE.DirectionalLight(0xf59e0b, 1.0);
+        rimLight.position.set(-5, -2, -3);
+        scene.add(rimLight);
     }
 
-    function render() {
+    function animate() {
         if (!isVisible) return;
-        ctx.clearRect(0, 0, width, height);
+        animId = requestAnimationFrame(animate);
 
-        const centerX = width / 2;
-        const centerY = height / 2;
+        if (globeGroup) {
+            globeGroup.rotation.y += 0.0025; // Smooth continuous photorealistic rotation
+        }
 
-        rotationY += 0.004;
-
-        // Draw Outer Atmosphere Glow
-        const glow = ctx.createRadialGradient(centerX, centerY, radius * 0.85, centerX, centerY, radius * 1.25);
-        glow.addColorStop(0, 'rgba(245, 158, 11, 0.22)');
-        glow.addColorStop(0.5, 'rgba(245, 158, 11, 0.08)');
-        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius * 1.25, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 3D Matrix Transformations
-        const cosY = Math.cos(rotationY);
-        const sinY = Math.sin(rotationY);
-        const cosZ = Math.cos(tiltZ);
-        const sinZ = Math.sin(tiltZ);
-
-        const projected = [];
-
-        points.forEach(p => {
-            // 1. Rotate Y (Spin)
-            const rx = p.x * cosY - p.z * sinY;
-            const rz = p.x * sinY + p.z * cosY;
-            const ry = p.y;
-
-            // 2. Rotate Z (Axis Tilt)
-            const x3d = rx * cosZ - ry * sinZ;
-            const y3d = rx * sinZ + ry * cosZ;
-            const z3d = rz;
-
-            // Project 3D to 2D
-            const scale = 400 / (400 - z3d * 0.3);
-            const px = centerX + x3d * scale * 0.95;
-            const py = centerY + y3d * scale * 0.95;
-
-            projected.push({
-                px, py, z: z3d, type: p.type
-            });
-        });
-
-        // Sort by Z depth (Back to Front)
-        projected.sort((a, b) => a.z - b.z);
-
-        // Render Dots
-        projected.forEach(p => {
-            const isFront = p.z > 0;
-            const depthAlpha = isFront ? (p.z / radius) * 0.65 + 0.35 : (1 + p.z / radius) * 0.22;
-
-            if (p.type === 'land') {
-                const dotRadius = isFront ? (p.z / radius) * 1.2 + 1.4 : 0.9;
-                ctx.beginPath();
-                ctx.arc(p.px, p.py, dotRadius, 0, Math.PI * 2);
-                ctx.fillStyle = isFront
-                    ? `rgba(245, 158, 11, ${depthAlpha})`
-                    : `rgba(217, 119, 6, ${depthAlpha * 0.45})`;
-                ctx.fill();
-
-                // Glow for front land dots
-                if (isFront && p.z > radius * 0.5) {
-                    ctx.beginPath();
-                    ctx.arc(p.px, p.py, dotRadius * 2.2, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(253, 211, 77, ${depthAlpha * 0.3})`;
-                    ctx.fill();
-                }
-            } else { // Grid dots
-                if (isFront) {
-                    ctx.beginPath();
-                    ctx.arc(p.px, p.py, 0.8, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 245, 210, ${depthAlpha * 0.35})`;
-                    ctx.fill();
-                }
-            }
-        });
-
-        animId = requestAnimationFrame(render);
+        renderer.render(scene, camera);
     }
 
     // Performance Optimization: IntersectionObserver (Pauses 100% when off-screen)
@@ -519,8 +468,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (entry.isIntersecting) {
                 if (!isVisible) {
                     isVisible = true;
-                    resize();
-                    render();
+                    if (!renderer) init();
+                    animate();
                 }
             } else {
                 isVisible = false;
@@ -531,8 +480,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     observer.observe(section);
 
-    window.addEventListener('resize', resize, { passive: true });
+    // Handle Window Resize
+    window.addEventListener('resize', () => {
+        if (!renderer || !canvas.parentElement) return;
+        const container = canvas.parentElement;
+        const width  = container.clientWidth;
+        const height = container.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+    }, { passive: true });
 })();
+
 
 
 

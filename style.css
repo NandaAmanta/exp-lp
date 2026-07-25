@@ -786,25 +786,24 @@ section {
     overflow: hidden;
 }
 
-/* Cropped 3D Earth Globe Graphic in Bottom Right */
+/* Cropped Earth Globe Graphic in Bottom Right */
 .about-earth-wrap {
     position: absolute;
-    bottom: -200px;
-    right: -180px;
-    width: 720px;
-    height: 720px;
+    bottom: -120px;
+    right: -110px;
+    width: 440px;
+    height: 440px;
     pointer-events: none;
     z-index: 1;
-    opacity: 1;
+    opacity: 0.85;
 }
 
 .earth-glow {
     position: absolute;
-    inset: 40px;
+    inset: -20px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
-    filter: blur(50px);
-    pointer-events: none;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.30) 0%, rgba(217, 119, 6, 0.15) 45%, transparent 70%);
+    filter: blur(45px);
 }
 
 .earth-canvas {
@@ -812,7 +811,9 @@ section {
     height: 100%;
     display: block;
     border-radius: 50%;
-    filter: drop-shadow(0 0 40px rgba(245, 158, 11, 0.3));
+    mask-image: radial-gradient(circle at 45% 45%, black 40%, rgba(0,0,0,0.7) 60%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at 45% 45%, black 40%, rgba(0,0,0,0.7) 60%, transparent 75%);
+    filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.25));
 }
 
 .about-grid {
@@ -1758,11 +1759,11 @@ footer {
     }
 
     .about-earth-wrap {
-        width: 520px;
-        height: 520px;
-        bottom: -140px;
-        right: -120px;
-        opacity: 0.9;
+        width: 320px;
+        height: 320px;
+        bottom: -80px;
+        right: -70px;
+        opacity: 0.65;
     }
 
     .process-steps {
@@ -1801,11 +1802,11 @@ footer {
     }
 
     .about-earth-wrap {
-        width: 400px;
-        height: 400px;
-        bottom: -100px;
-        right: -80px;
-        opacity: 0.8;
+        width: 260px;
+        height: 260px;
+        bottom: -60px;
+        right: -50px;
+        opacity: 0.50;
     }
 
     .nav-links {

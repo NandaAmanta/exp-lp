@@ -475,55 +475,8 @@ ul, ol { list-style: none; }
 }
 
 /* ============================
-   AURORA EFFECT — SECTIONS
-   Subtle glow for services, portfolio, blog
+   SECTIONS CONTAINER Z-INDEX
    ============================ */
-.services::before,
-.portfolio::before,
-.blog::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.services::before {
-    background:
-        radial-gradient(ellipse 90% 35% at 20% 50%,  rgba(245, 158, 11, 0.22) 0%, transparent 48%),
-        radial-gradient(ellipse 75% 30% at 80% 30%,  rgba(217, 119, 6,  0.18) 0%, transparent 45%),
-        radial-gradient(ellipse 60% 25% at 55% 80%,  rgba(253, 211, 77, 0.14) 0%, transparent 42%);
-    animation: sectionAurora1 14s ease-in-out infinite alternate;
-}
-
-.portfolio::before {
-    background:
-        radial-gradient(ellipse 85% 30% at 75% 40%,  rgba(245, 158, 11, 0.24) 0%, transparent 45%),
-        radial-gradient(ellipse 70% 28% at 15% 65%,  rgba(234, 88,  12, 0.18) 0%, transparent 42%);
-    animation: sectionAurora2 17s ease-in-out infinite alternate;
-}
-
-.blog::before {
-    background:
-        radial-gradient(ellipse 80% 28% at 25% 35%,  rgba(253, 211, 77, 0.20) 0%, transparent 45%),
-        radial-gradient(ellipse 85% 32% at 70% 70%,  rgba(245, 158, 11, 0.22) 0%, transparent 45%);
-    animation: sectionAurora3 19s ease-in-out infinite alternate;
-}
-
-@keyframes sectionAurora1 {
-    0%   { opacity: 0.7; transform: scale(1)    translate(0, 0);    }
-    100% { opacity: 1;   transform: scale(1.08) translate(2%, 3%);  }
-}
-
-@keyframes sectionAurora2 {
-    0%   { opacity: 0.6; transform: scale(1)    translate(0, 0);    }
-    100% { opacity: 0.95; transform: scale(1.1) translate(-3%, 2%); }
-}
-
-@keyframes sectionAurora3 {
-    0%   { opacity: 0.65; transform: scale(1)    translate(0, 0);   }
-    100% { opacity: 1;    transform: scale(1.06) translate(2%, -2%);}
-}
 
 section .container {
     position: relative;

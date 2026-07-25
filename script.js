@@ -12,7 +12,26 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // ============================
-// Smooth Scroll
+// Initialize Lenis Smooth Scroll
+// ============================
+let lenis;
+if (typeof Lenis !== 'undefined') {
+    lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        touchMultiplier: 1.5,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+}
+
+// ============================
+// Smooth Scroll Link Handler
 // ============================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -21,10 +40,14 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         e.preventDefault();
         const target = document.querySelector(href);
         if (target) {
-            window.scrollTo({
-                top: target.offsetTop - 72,
-                behavior: 'smooth'
-            });
+            if (lenis) {
+                lenis.scrollTo(target, { offset: -72 });
+            } else {
+                window.scrollTo({
+                    top: target.offsetTop - 72,
+                    behavior: 'smooth'
+                });
+            }
         }
     });
 });
@@ -128,7 +151,7 @@ const heroStats = document.querySelector('.hero-stats');
 if (heroStats) statsObserver.observe(heroStats);
 
 // ============================
-// Star Field (canvas)
+// Star Field (canvas with IntersectionObserver Optimization)
 // ============================
 (function createStarFields() {
     const canvases = document.querySelectorAll('.star-canvas');
@@ -137,23 +160,24 @@ if (heroStats) statsObserver.observe(heroStats);
     canvases.forEach(canvas => {
         const ctx = canvas.getContext('2d');
         let stars = [];
-        let animId;
+        let animId = null;
+        let isVisible = false;
 
         function init() {
             const parent = canvas.parentElement;
             canvas.width  = parent ? parent.clientWidth || window.innerWidth : window.innerWidth;
             canvas.height = parent ? parent.clientHeight || window.innerHeight : window.innerHeight;
             stars = [];
-            // ~1 star per 4500px² of screen area
-            const count = Math.min(220, Math.floor((canvas.width * canvas.height) / 4500));
+            // Optimized star count for maximum FPS (~70 stars per canvas)
+            const count = Math.min(70, Math.floor((canvas.width * canvas.height) / 8000));
             for (let i = 0; i < count; i++) {
                 stars.push({
                     x:      Math.random() * canvas.width,
                     y:      Math.random() * canvas.height,
-                    r:      Math.random() * 0.75 + 0.15,  // 0.15 – 0.9px
-                    op:     Math.random() * 0.4 + 0.1,    // current opacity
-                    max:    Math.random() * 0.25 + 0.50,  // max 0.50–0.75
-                    min:    Math.random() * 0.08 + 0.05,  // min 0.05–0.13
+                    r:      Math.random() * 0.75 + 0.15,
+                    op:     Math.random() * 0.4 + 0.1,
+                    max:    Math.random() * 0.25 + 0.50,
+                    min:    Math.random() * 0.08 + 0.05,
                     speed:  Math.random() * 0.004 + 0.001,
                     dir:    1,
                 });
@@ -161,25 +185,13 @@ if (heroStats) statsObserver.observe(heroStats);
         }
 
         function draw() {
+            if (!isVisible) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             stars.forEach(s => {
-                // Twinkle
                 s.op += s.speed * s.dir;
                 if (s.op >= s.max) { s.op = s.max; s.dir = -1; }
                 if (s.op <= s.min) { s.op = s.min; s.dir =  1; }
 
-                // Only the largest stars (~top 15%) get a faint glow
-                if (s.r > 0.6) {
-                    const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2);
-                    grd.addColorStop(0, `rgba(255, 245, 210, ${s.op * 0.4})`);
-                    grd.addColorStop(1, `rgba(255, 245, 210, 0)`);
-                    ctx.fillStyle = grd;
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.r * 2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // Star dot
                 ctx.beginPath();
                 ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 248, 220, ${s.op})`;
@@ -188,13 +200,30 @@ if (heroStats) statsObserver.observe(heroStats);
             animId = requestAnimationFrame(draw);
         }
 
-        init();
-        draw();
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (!isVisible) {
+                        isVisible = true;
+                        init();
+                        draw();
+                    }
+                } else {
+                    isVisible = false;
+                    if (animId) cancelAnimationFrame(animId);
+                }
+            });
+        }, { threshold: 0.05 });
+
+        const section = canvas.parentElement || canvas;
+        observer.observe(section);
 
         window.addEventListener('resize', () => {
-            cancelAnimationFrame(animId);
-            init();
-            draw();
+            if (isVisible) {
+                if (animId) cancelAnimationFrame(animId);
+                init();
+                draw();
+            }
         }, { passive: true });
     });
 })();
@@ -290,74 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================
-// Scroll-Driven Background Parallax (Aurora & Stars)
-// ============================
-(function initScrollParallax() {
-    // Respect accessibility settings
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const hero = document.querySelector('.hero');
-    const starCanvas = document.getElementById('star-canvas');
-    const shootingStars = document.querySelector('.shooting-stars');
-    const aurora1 = document.querySelector('.aurora-1');
-    const aurora2 = document.querySelector('.aurora-2');
-    const aurora3 = document.querySelector('.aurora-3');
-    const aurora4 = document.querySelector('.aurora-4');
-
-    let ticking = false;
-
-    function updateScrollParallax() {
-        const scrollY = window.scrollY;
-        const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
-
-        // Calculate scroll parallax only while Hero section is visible
-        if (scrollY <= heroHeight * 1.5) {
-            // 1. Starfield Canvas (moves at 0.20x scroll speed)
-            if (starCanvas) {
-                starCanvas.style.transform = `translate3d(0, ${(scrollY * 0.20).toFixed(2)}px, 0)`;
-            }
-
-            // 2. Shooting Stars layer (moves at 0.30x scroll speed)
-            if (shootingStars) {
-                shootingStars.style.transform = `translate3d(0, ${(scrollY * 0.30).toFixed(2)}px, 0)`;
-            }
-
-            // 3. Aurora Layer 1 (Amber top-left: moves at 0.35x scroll speed)
-            if (aurora1) {
-                aurora1.style.transform = `translate3d(0, ${(scrollY * 0.35).toFixed(2)}px, 0)`;
-            }
-
-            // 4. Aurora Layer 2 (Orange bottom-right: moves at 0.55x scroll speed)
-            if (aurora2) {
-                aurora2.style.transform = `translate3d(0, ${(scrollY * 0.55).toFixed(2)}px, 0)`;
-            }
-
-            // 5. Aurora Layer 3 (Golden center: moves at 0.42x scroll speed)
-            if (aurora3) {
-                aurora3.style.transform = `translate3d(0, ${(scrollY * 0.42).toFixed(2)}px, 0)`;
-            }
-
-            // 6. Aurora Layer 4 (Upper right accent: moves at 0.65x scroll speed)
-            if (aurora4) {
-                aurora4.style.transform = `translate3d(0, ${(scrollY * 0.65).toFixed(2)}px, 0)`;
-            }
-        }
-        ticking = false;
-    }
-
-    // Trigger update on scroll via requestAnimationFrame for performance
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(updateScrollParallax);
-            ticking = true;
-        }
-    }, { passive: true });
-
-    // Initial positioning check
-    updateScrollParallax();
-})();
-
-// ============================
 // 3D Procedural Tech Globe (3D Projection Engine - 100% Offline & CORS Free)
 // ============================
 (function init3DEarthGlobe() {
@@ -411,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     landmasses.forEach(land => {
         const centerLat = (land.lat * Math.PI) / 180;
         const centerLon = (land.lon * Math.PI) / 180;
-        for (let i = 0; i < land.size * 7; i++) {
+        for (let i = 0; i < Math.floor(land.size * 2.2); i++) {
             const dLat = (Math.random() - 0.5) * 0.48;
             const dLon = (Math.random() - 0.5) * 0.58;
             const lat = centerLat + dLat;
@@ -439,12 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const centerX = width / 2;
         const centerY = height / 2;
 
-        rotationY += 0.004;
+        rotationY += 0.005;
 
         // Draw Outer Atmosphere Glow
         const glow = ctx.createRadialGradient(centerX, centerY, radius * 0.85, centerX, centerY, radius * 1.25);
-        glow.addColorStop(0, 'rgba(245, 158, 11, 0.22)');
-        glow.addColorStop(0.5, 'rgba(245, 158, 11, 0.08)');
+        glow.addColorStop(0, 'rgba(245, 158, 11, 0.20)');
+        glow.addColorStop(0.5, 'rgba(245, 158, 11, 0.05)');
         glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = glow;
         ctx.beginPath();
@@ -457,8 +418,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const cosZ = Math.cos(tiltZ);
         const sinZ = Math.sin(tiltZ);
 
-        const projected = [];
-
         points.forEach(p => {
             // 1. Rotate Y (Spin)
             const rx = p.x * cosY - p.z * sinY;
@@ -470,47 +429,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const y3d = rx * sinZ + ry * cosZ;
             const z3d = rz;
 
-            // Project 3D to 2D
+            // Render only front-facing or near-edge points for maximum FPS
+            const isFront = z3d > -40;
             const scale = 400 / (400 - z3d * 0.3);
             const px = centerX + x3d * scale * 0.95;
             const py = centerY + y3d * scale * 0.95;
 
-            projected.push({
-                px, py, z: z3d, type: p.type
-            });
-        });
-
-        // Sort by Z depth (Back to Front)
-        projected.sort((a, b) => a.z - b.z);
-
-        // Render Dots
-        projected.forEach(p => {
-            const isFront = p.z > 0;
-            const depthAlpha = isFront ? (p.z / radius) * 0.65 + 0.35 : (1 + p.z / radius) * 0.22;
+            const depthAlpha = z3d > 0 ? (z3d / radius) * 0.65 + 0.35 : (1 + z3d / radius) * 0.20;
 
             if (p.type === 'land') {
-                const dotRadius = isFront ? (p.z / radius) * 1.2 + 1.4 : 0.9;
+                const dotRadius = z3d > 0 ? (z3d / radius) * 1.2 + 1.3 : 0.8;
                 ctx.beginPath();
-                ctx.arc(p.px, p.py, dotRadius, 0, Math.PI * 2);
-                ctx.fillStyle = isFront
+                ctx.arc(px, py, dotRadius, 0, Math.PI * 2);
+                ctx.fillStyle = z3d > 0
                     ? `rgba(245, 158, 11, ${depthAlpha})`
-                    : `rgba(217, 119, 6, ${depthAlpha * 0.45})`;
+                    : `rgba(217, 119, 6, ${depthAlpha * 0.4})`;
                 ctx.fill();
-
-                // Glow for front land dots
-                if (isFront && p.z > radius * 0.5) {
-                    ctx.beginPath();
-                    ctx.arc(p.px, p.py, dotRadius * 2.2, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(253, 211, 77, ${depthAlpha * 0.3})`;
-                    ctx.fill();
-                }
-            } else { // Grid dots
-                if (isFront) {
-                    ctx.beginPath();
-                    ctx.arc(p.px, p.py, 0.8, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 245, 210, ${depthAlpha * 0.35})`;
-                    ctx.fill();
-                }
+            } else if (isFront) {
+                ctx.beginPath();
+                ctx.arc(px, py, 0.75, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 245, 210, ${depthAlpha * 0.30})`;
+                ctx.fill();
             }
         });
 

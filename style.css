@@ -53,7 +53,6 @@
 }
 
 html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -518,7 +517,6 @@ section .container {
         rgba(255, 255, 255, 0.9)
     );
     opacity: 0;
-    filter: drop-shadow(0 0 2px rgba(255, 230, 120, 0.5));
     animation: shootStar linear infinite;
 }
 
@@ -755,8 +753,7 @@ section {
     position: absolute;
     inset: -20px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(245, 158, 11, 0.30) 0%, rgba(217, 119, 6, 0.15) 45%, transparent 70%);
-    filter: blur(45px);
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.10) 45%, transparent 70%);
 }
 
 .earth-canvas {
@@ -764,9 +761,7 @@ section {
     height: 100%;
     display: block;
     border-radius: 50%;
-    mask-image: radial-gradient(circle at 45% 45%, black 40%, rgba(0,0,0,0.7) 60%, transparent 75%);
-    -webkit-mask-image: radial-gradient(circle at 45% 45%, black 40%, rgba(0,0,0,0.7) 60%, transparent 75%);
-    filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.25));
+    opacity: 0.88;
 }
 
 .about-grid {

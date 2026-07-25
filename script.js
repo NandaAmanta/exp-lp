@@ -130,69 +130,73 @@ if (heroStats) statsObserver.observe(heroStats);
 // ============================
 // Star Field (canvas)
 // ============================
-(function createStarField() {
-    const canvas = document.getElementById('star-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    let animId;
+(function createStarFields() {
+    const canvases = document.querySelectorAll('.star-canvas');
+    if (!canvases.length) return;
 
-    function init() {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
-        stars = [];
-        // ~1 star per 5000px² of screen area
-        const count = Math.min(220, Math.floor((canvas.width * canvas.height) / 4500));
-        for (let i = 0; i < count; i++) {
-            stars.push({
-                x:      Math.random() * canvas.width,
-                y:      Math.random() * canvas.height,
-                r:      Math.random() * 0.75 + 0.15,  // 0.15 – 0.9px
-                op:     Math.random() * 0.4 + 0.1,    // current opacity
-                max:    Math.random() * 0.25 + 0.50,  // max 0.50–0.75
-                min:    Math.random() * 0.08 + 0.05,  // min 0.05–0.13
-                speed:  Math.random() * 0.004 + 0.001,
-                dir:    1,
-            });
-        }
-    }
+    canvases.forEach(canvas => {
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let animId;
 
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        stars.forEach(s => {
-            // Twinkle
-            s.op += s.speed * s.dir;
-            if (s.op >= s.max) { s.op = s.max; s.dir = -1; }
-            if (s.op <= s.min) { s.op = s.min; s.dir =  1; }
-
-            // Only the largest stars (~top 15%) get a faint glow
-            if (s.r > 0.6) {
-                const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2);
-                grd.addColorStop(0, `rgba(255, 245, 210, ${s.op * 0.4})`);
-                grd.addColorStop(1, `rgba(255, 245, 210, 0)`);
-                ctx.fillStyle = grd;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r * 2, 0, Math.PI * 2);
-                ctx.fill();
+        function init() {
+            const parent = canvas.parentElement;
+            canvas.width  = parent ? parent.clientWidth || window.innerWidth : window.innerWidth;
+            canvas.height = parent ? parent.clientHeight || window.innerHeight : window.innerHeight;
+            stars = [];
+            // ~1 star per 4500px² of screen area
+            const count = Math.min(220, Math.floor((canvas.width * canvas.height) / 4500));
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x:      Math.random() * canvas.width,
+                    y:      Math.random() * canvas.height,
+                    r:      Math.random() * 0.75 + 0.15,  // 0.15 – 0.9px
+                    op:     Math.random() * 0.4 + 0.1,    // current opacity
+                    max:    Math.random() * 0.25 + 0.50,  // max 0.50–0.75
+                    min:    Math.random() * 0.08 + 0.05,  // min 0.05–0.13
+                    speed:  Math.random() * 0.004 + 0.001,
+                    dir:    1,
+                });
             }
+        }
 
-            // Star dot
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 248, 220, ${s.op})`;
-            ctx.fill();
-        });
-        animId = requestAnimationFrame(draw);
-    }
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(s => {
+                // Twinkle
+                s.op += s.speed * s.dir;
+                if (s.op >= s.max) { s.op = s.max; s.dir = -1; }
+                if (s.op <= s.min) { s.op = s.min; s.dir =  1; }
 
-    init();
-    draw();
+                // Only the largest stars (~top 15%) get a faint glow
+                if (s.r > 0.6) {
+                    const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2);
+                    grd.addColorStop(0, `rgba(255, 245, 210, ${s.op * 0.4})`);
+                    grd.addColorStop(1, `rgba(255, 245, 210, 0)`);
+                    ctx.fillStyle = grd;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
 
-    window.addEventListener('resize', () => {
-        cancelAnimationFrame(animId);
+                // Star dot
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 248, 220, ${s.op})`;
+                ctx.fill();
+            });
+            animId = requestAnimationFrame(draw);
+        }
+
         init();
         draw();
-    }, { passive: true });
+
+        window.addEventListener('resize', () => {
+            cancelAnimationFrame(animId);
+            init();
+            draw();
+        }, { passive: true });
+    });
 })();
 
 
@@ -532,6 +536,27 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(section);
 
     window.addEventListener('resize', resize, { passive: true });
+})();
+
+// ============================
+// Process Rocket Scroll Trigger (Runs only when user views the section)
+// ============================
+(function initProcessRocketObserver() {
+    const processSection = document.getElementById('process');
+    const processSteps   = document.querySelector('.process-steps');
+    if (!processSection || !processSteps) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                processSteps.classList.add('animate-rocket');
+            } else {
+                processSteps.classList.remove('animate-rocket');
+            }
+        });
+    }, { threshold: 0.15 });
+
+    observer.observe(processSection);
 })();
 
 

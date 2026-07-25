@@ -997,7 +997,7 @@ section {
 .process-steps {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    gap: 24px;
     position: relative;
     margin-top: 20px;
 }
@@ -1010,27 +1010,176 @@ section {
     right: calc(12.5% + 8px);
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border-accent), var(--accent), var(--border-accent), transparent);
-    z-index: 0;
+    z-index: 1;
+}
+
+/* Rocket Animation on Process Timeline */
+.timeline-rocket-track {
+    position: absolute;
+    top: 28px;
+    left: calc(12.5% + 8px);
+    width: calc(75% - 16px);
+    height: 0;
+    z-index: 2; /* Rocket runs at z-index 2 (behind step circles z-index 3) */
+    pointer-events: none;
+}
+
+.timeline-rocket {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    will-change: left, opacity, transform;
+}
+
+.process-steps.animate-rocket .timeline-rocket {
+    animation: rocketGlide 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.rocket-trail {
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, rgba(245, 158, 11, 0.15) 20%, rgba(245, 158, 11, 0.85) 75%, #FCD34D 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 16px #F59E0B, 0 0 28px rgba(245, 158, 11, 0.6);
+    margin-right: -4px;
+    opacity: 0.95;
+}
+
+.rocket-flame {
+    width: 18px;
+    height: 10px;
+    background: radial-gradient(ellipse at right, #FFFFFF 0%, #FCD34D 30%, #F59E0B 70%, #EF4444 100%);
+    border-radius: 50% 0 0 50%;
+    margin-right: -4px;
+    filter: blur(0.3px);
+    box-shadow: 0 0 14px #F59E0B, 0 0 24px #EF4444;
+}
+
+.process-steps.animate-rocket .rocket-flame {
+    animation: flameThrust 9s ease-in-out infinite;
+}
+
+.rocket-body {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FCD34D;
+    filter: drop-shadow(0 0 12px #F59E0B) drop-shadow(0 0 22px rgba(245, 158, 11, 0.9));
+    transform: rotate(45deg);
+}
+
+.rocket-body svg {
+    width: 30px;
+    height: 30px;
+    stroke: #FCD34D;
+    stroke-width: 2.4;
+    fill: rgba(245, 158, 11, 0.35);
+}
+
+/* Flight & Landing at Step 04 */
+@keyframes rocketGlide {
+    0% {
+        left: 0%;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.65) rotate(0deg);
+    }
+    4% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    28% {
+        left: 33.33%;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    52% {
+        left: 66.66%;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    68% {
+        left: 100%;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    /* Landing Touchdown at Step 04 */
+    71% {
+        left: 100%;
+        transform: translate(-50%, -50%) scale(1.12) rotate(-8deg);
+    }
+    74% {
+        left: 100%;
+        transform: translate(-50%, -50%) scale(0.96) rotate(4deg);
+    }
+    77% {
+        left: 100%;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    87% {
+        left: 100%;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    94% {
+        left: 100%;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.65) rotate(0deg);
+    }
+    100% {
+        left: 0%;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.65) rotate(0deg);
+    }
+}
+
+@keyframes flameThrust {
+    0% {
+        transform: scaleX(0.85) scaleY(0.9);
+        opacity: 0.8;
+    }
+    67% {
+        transform: scaleX(1.25) scaleY(1.1);
+        opacity: 1;
+    }
+    /* Flame powers down upon landing at Step 04 */
+    71% {
+        transform: scaleX(0.15) scaleY(0.15);
+        opacity: 0;
+    }
+    88% {
+        transform: scaleX(0.15) scaleY(0.15);
+        opacity: 0;
+    }
+    94% {
+        transform: scaleX(0.85) scaleY(0.9);
+        opacity: 0.8;
+    }
 }
 
 .process-step {
     text-align: center;
-    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 .step-number-wrap {
     position: relative;
     display: flex;
     justify-content: center;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
+    z-index: 3;
 }
 
 .step-circle {
     width: 56px;
     height: 56px;
-    background: var(--bg-card);
+    background: var(--bg-card); /* Solid background to obscure rocket when passing behind */
     border: 1px solid var(--border);
     border-radius: 50%;
     display: flex;
@@ -1041,6 +1190,161 @@ section {
     font-weight: 700;
     color: var(--text-dim);
     transition: all 0.35s var(--ease-out);
+    position: relative;
+    z-index: 3;
+}
+
+.step-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 32px 22px;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.35s var(--ease-out);
+}
+
+.process-step:hover .step-card {
+    border-color: var(--border-accent);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+}
+
+/* Synchronized Step Circle Glowing Animations */
+.process-steps.animate-rocket .step-circle-1 {
+    animation: step1Glow 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes step1Glow {
+    0% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+    3%, 22% {
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        border-color: var(--accent-light);
+        color: #ffffff;
+        box-shadow: 0 0 25px var(--accent-glow), 0 0 40px var(--accent-glow-sm);
+        transform: scale(1.12);
+    }
+    26%, 88% {
+        background: var(--bg-card);
+        border-color: var(--border-accent);
+        color: var(--accent-light);
+        box-shadow: 0 0 16px var(--accent-glow-sm);
+        transform: scale(1);
+    }
+    94%, 100% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+}
+
+.process-steps.animate-rocket .step-circle-2 {
+    animation: step2Glow 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes step2Glow {
+    0%, 24% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+    28%, 46% {
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        border-color: var(--accent-light);
+        color: #ffffff;
+        box-shadow: 0 0 25px var(--accent-glow), 0 0 40px var(--accent-glow-sm);
+        transform: scale(1.12);
+    }
+    50%, 88% {
+        background: var(--bg-card);
+        border-color: var(--border-accent);
+        color: var(--accent-light);
+        box-shadow: 0 0 16px var(--accent-glow-sm);
+        transform: scale(1);
+    }
+    94%, 100% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+}
+
+.process-steps.animate-rocket .step-circle-3 {
+    animation: step3Glow 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes step3Glow {
+    0%, 48% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+    52%, 66% {
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        border-color: var(--accent-light);
+        color: #ffffff;
+        box-shadow: 0 0 25px var(--accent-glow), 0 0 40px var(--accent-glow-sm);
+        transform: scale(1.12);
+    }
+    69%, 88% {
+        background: var(--bg-card);
+        border-color: var(--border-accent);
+        color: var(--accent-light);
+        box-shadow: 0 0 16px var(--accent-glow-sm);
+        transform: scale(1);
+    }
+    94%, 100% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+}
+
+.process-steps.animate-rocket .step-circle-4 {
+    animation: step4Glow 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes step4Glow {
+    0%, 65% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
+    69%, 88% {
+        background: linear-gradient(135deg, var(--accent-light), var(--accent), var(--accent-dark));
+        border-color: #ffffff;
+        color: #ffffff;
+        box-shadow: 0 0 35px var(--accent-glow), 0 0 60px var(--accent-glow);
+        transform: scale(1.18);
+    }
+    94%, 100% {
+        background: var(--bg-card);
+        border-color: var(--border);
+        color: var(--text-dim);
+        box-shadow: none;
+        transform: scale(1);
+    }
 }
 
 .process-step:hover .step-circle {
@@ -1771,7 +2075,8 @@ footer {
         gap: 48px;
     }
 
-    .process-steps::before {
+    .process-steps::before,
+    .timeline-rocket-track {
         display: none;
     }
 

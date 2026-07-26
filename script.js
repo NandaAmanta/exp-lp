@@ -498,6 +498,48 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(processSection);
 })();
 
+// ============================
+// Director Video Modal Handler
+// ============================
+(function initDirectorVideoModal() {
+    const videoCard = document.getElementById('open-director-video');
+    const modal = document.getElementById('video-modal');
+    const closeBtn = document.getElementById('close-video-modal');
+    const videoPlayer = document.getElementById('director-video-player');
+
+    if (!videoCard || !modal) return;
+
+    function openModal() {
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        if (videoPlayer) {
+            videoPlayer.play().catch(() => {});
+        }
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        if (videoPlayer) {
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+        }
+    }
+
+    videoCard.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+})();
+
 
 
 

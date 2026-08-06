@@ -52,7 +52,7 @@ export default function Navbar({ activePage = "home" }) {
             <a href={homeHref("#home")} onClick={() => setMenuOpen(false)}>Home</a>
           </li>
           <li>
-            <Link href="/about" className={!isHome ? "active" : ""} onClick={() => setMenuOpen(false)}>
+            <Link href="/about" className={activePage === "about" ? "active" : ""} onClick={() => setMenuOpen(false)}>
               About Us
             </Link>
           </li>
@@ -60,7 +60,9 @@ export default function Navbar({ activePage = "home" }) {
             <a href={homeHref("#services")} onClick={() => setMenuOpen(false)}>Services</a>
           </li>
           <li>
-            <a href={homeHref("#portfolio")} onClick={() => setMenuOpen(false)}>Portfolio</a>
+            <Link href="/portfolio" className={activePage === "portfolio" ? "active" : ""} onClick={() => setMenuOpen(false)}>
+              Portfolio
+            </Link>
           </li>
           <li>
             <a href={homeHref("#blog")} onClick={() => setMenuOpen(false)}>Blog</a>

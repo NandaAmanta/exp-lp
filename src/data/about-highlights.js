@@ -23,7 +23,7 @@ export const ABOUT_FEATURES = [
 // `delayMs` preserves the original staggered reveal-on-scroll timing.
 export const ABOUT_STATS = [
   { number: "50", accent: "+", label: "Projects successfully delivered", delayMs: 0 },
-  { number: "3", accent: "+", label: "Years building digital solutions", delayMs: 100 },
+  { number: "4", accent: "+", label: "Years building digital solutions", delayMs: 100 },
   { number: "10", accent: "+", label: "Active long-term clients", delayMs: 150 },
   { number: "100", accent: "%", label: "Client satisfaction rate", delayMs: 200 },
 ];

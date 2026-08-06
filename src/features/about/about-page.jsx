@@ -22,7 +22,7 @@ export default function AboutPage() {
       <PageHero />
       <Overview />
       <VisionMission />
-      <Director onOpenVideo={() => setVideoOpen(true)} />
+      {/* <Director onOpenVideo={() => setVideoOpen(true)} /> */}
       <Team />
       <AboutContact />
       <Footer variant="about" />

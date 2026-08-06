@@ -25,10 +25,10 @@ export default function Team() {
                 <span className="team-role">{member.role}</span>
                 <p>{member.bio}</p>
                 <div className="team-socials">
-                  <a href={COMPANY.social.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+                  <a href={member.linkedin || COMPANY.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                     <Linkedin />
                   </a>
-                  <a href={`mailto:${COMPANY.email}`} aria-label="Email">
+                  <a href={`mailto:${member.email || COMPANY.email}`} aria-label="Email">
                     <Mail />
                   </a>
                 </div>

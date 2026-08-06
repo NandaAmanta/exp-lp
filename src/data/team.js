@@ -1,27 +1,32 @@
-// Mock data for the "Meet Our Team" grid.
+// Team member data for the "Meet Our Team" grid.
 export const TEAM = [
   {
-    img: "/assets/team-nanda.jpg",
+    img: "/assets/team/nandaamanta.webp",
     name: "I Putu Nanda Amanta",
     role: "Founder & CEO",
     bio: "Leading strategic direction and product architecture at PT EXP Digital Solution with 8+ years of enterprise software engineering experience.",
+    linkedin: "https://www.linkedin.com/in/nanda-amanta",
   },
   {
-    img: "/assets/team-arya.jpg",
-    name: "Arya Pratama",
-    role: "Head of Engineering",
-    bio: "Specializing in high-concurrency backend microservices, cloud-native infrastructure, and automated CI/CD pipelines.",
+    img: "/assets/team/sanjaya.webp",
+    name: "I Made Adi Putra Sanjaya",
+    role: "Software Engineer",
+    bio: "Specializing in full-stack web applications, end-to-end software architecture, and modern cloud solutions.",
+    linkedin: "https://www.linkedin.com/in/madesanjaya/",
   },
   {
-    img: "/assets/team-siti.jpg",
-    name: "Siti Rahmawati",
-    role: "Lead UI/UX Designer",
-    bio: "Focusing on futuristic design systems, intuitive user research, and interactive product prototyping.",
+    img: "/assets/team/astari.webp",
+    name: "Ni Wayan Astari",
+    role: "Marketing Specialist",
+    bio: "Specializing in brand positioning, multi-channel growth campaigns, content strategy, and market expansion analytics.",
+    linkedin: "https://www.linkedin.com/in/ni-wayan-astari-7488531bb/",
   },
   {
-    img: "/assets/team-budi.jpg",
-    name: "Budi Santoso",
-    role: "Head of Digital Growth",
-    bio: "Managing data-driven digital growth, performance marketing across Meta & Google Ads, and market expansion analytics.",
+    img: "/assets/team/ketut.webp",
+    name: "Ketut Gede Mahendra Saputra",
+    role: "Software Engineer",
+    bio: "Focusing on full-stack software engineering, scalable web systems, and seamless user experiences.",
+    linkedin: "https://www.linkedin.com/in/ikg-mahendra-saputra/",
   },
 ];
+

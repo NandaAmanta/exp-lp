@@ -14,7 +14,7 @@ export const COMPANY = {
     postalCode: "80581",
     country: "ID",
   },
-  geo: { latitude: -8.6705, longitude: 115.2126 },
+  geo: { latitude: -8.5821851, longitude: 115.3011966 },
   social: {
     instagram: "https://www.instagram.com/expdigitalsolution",
     linkedin: "https://www.linkedin.com/company/exp-digital-solution",

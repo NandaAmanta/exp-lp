@@ -5,7 +5,7 @@ import ShootingStars from "@/components/ui/ShootingStars";
 import { PORTFOLIO_PROJECTS } from "@/data/portfolio";
 
 export default function Portfolio() {
-  // Only display the top 3 selected/featured works on the Home Page
+  // Only display top 3 selected works on the Home Page
   const featuredProjects = PORTFOLIO_PROJECTS.slice(0, 3);
 
   return (

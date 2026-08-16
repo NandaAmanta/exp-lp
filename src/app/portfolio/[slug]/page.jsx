@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import PortfolioDetailPage from "@/features/portfolio/portfolio-detail-page";
 import { getProjectBySlug, getAllProjects } from "@/data/portfolio";
 
@@ -56,7 +57,7 @@ export async function generateMetadata({ params }) {
 export default function DetailPage({ params }) {
   const project = getProjectBySlug(params.slug);
   if (!project) {
-    return <PortfolioDetailPage project={null} />;
+    notFound();
   }
 
   const jsonLd = {

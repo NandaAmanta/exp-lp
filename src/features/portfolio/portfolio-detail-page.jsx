@@ -21,7 +21,6 @@ import StarCanvas from "@/components/ui/StarCanvas";
 import ShootingStars from "@/components/ui/ShootingStars";
 import PortfolioCTA from "./components/PortfolioCTA";
 import { getRelatedProjects } from "@/data/portfolio";
-import { whatsappLink } from "@/data/company";
 
 export default function PortfolioDetailPage({ project }) {
   const [activeImage, setActiveImage] = useState(null);
@@ -236,15 +235,13 @@ export default function PortfolioDetailPage({ project }) {
                     </li>
                   </ul>
 
-                  <a
-                    href={whatsappLink(`Hi EXP Digital Solution, I am interested in building a project similar to "${project.title}".`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href="/contact"
                     className="btn-primary btn-full-width"
                     style={{ marginTop: "24px", textAlign: "center", justifyContent: "center" }}
                   >
                     Build a Similar Project <ArrowRight size={16} />
-                  </a>
+                  </Link>
                 </div>
               </aside>
             </div>

@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowRight, MessageSquare } from "lucide-react";
-import { whatsappLink } from "@/data/company";
 
 export default function PortfolioCTA() {
   return (
@@ -18,15 +18,13 @@ export default function PortfolioCTA() {
               Our engineering & design experts are ready to turn your complex operational requirements into a high-performance digital platform.
             </p>
             <div className="portfolio-cta-actions">
-              <a
-                href={whatsappLink("Hi EXP Digital Solution, I am interested in discussing a custom project for our business.")}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/contact"
                 className="btn-primary"
                 id="btn-portfolio-cta"
               >
                 Schedule a Consultation <ArrowRight size={18} />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

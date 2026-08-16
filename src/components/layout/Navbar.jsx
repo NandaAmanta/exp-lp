@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { whatsappLink } from "@/data/company";
 
 export default function Navbar({ activePage = "home" }) {
   const [scrolled, setScrolled] = useState(false);
@@ -71,18 +70,13 @@ export default function Navbar({ activePage = "home" }) {
             <a href={homeHref("#testimonials")} onClick={() => setMenuOpen(false)}>Testimonials</a>
           </li>
           <li>
-            <Link href="/contact" className={activePage === "contact" ? "active" : ""} onClick={() => setMenuOpen(false)}>
-              Contact
-            </Link>
-          </li>
-          <li>
             <Link
               href="/contact"
-              className="btn-primary"
-              id="btn-lets-talk"
+              className={`btn-primary ${activePage === "contact" ? "active" : ""}`}
+              id="btn-contact-nav"
               onClick={() => setMenuOpen(false)}
             >
-              Let&apos;s Talk
+              Contact
             </Link>
           </li>
         </ul>

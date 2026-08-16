@@ -1,5 +1,5 @@
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
-import { whatsappLink } from "@/data/company";
 
 export default function Contact() {
   return (
@@ -15,16 +15,14 @@ export default function Contact() {
             <p>Partner with us to engineer your next digital advantage. Tell us about your project.</p>
           </div>
           <div className="contact-action">
-            <a
-              href={whatsappLink()}
+            <Link
+              href="/contact"
               className="whatsapp-btn"
-              target="_blank"
-              rel="noopener"
               id="btn-consult"
             >
               <MessageCircle />
               Consult with Experts
-            </a>
+            </Link>
           </div>
         </div>
       </div>

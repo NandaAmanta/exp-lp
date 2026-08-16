@@ -35,6 +35,7 @@ export default function Footer({ variant = "home" }) {
               <Link href="/about">About Us</Link>
               <Link href="/#services">Services</Link>
               <Link href="/portfolio">Portfolio</Link>
+              <Link href="/contact">Contact</Link>
               <Link href="/#blog">Blog</Link>
             </div>
           ) : (
@@ -45,6 +46,7 @@ export default function Footer({ variant = "home" }) {
                 <Link href="/about">About Us</Link>
                 <Link href="#services">Services</Link>
                 <Link href="/portfolio">Portfolio</Link>
+                <Link href="/contact">Contact</Link>
                 <Link href="#testimonials">Testimonials</Link>
                 <Link href="#blog">Blog</Link>
               </div>

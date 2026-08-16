@@ -22,6 +22,7 @@ export const COMPANY = {
   },
   mediumRssUrl: "https://medium.com/feed/@expdigitalsolution",
   gtmId: "GTM-TDF7S7CD",
+  recaptchaSiteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
 };
 
 export const whatsappLink = (message) =>

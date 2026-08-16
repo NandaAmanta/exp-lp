@@ -71,16 +71,19 @@ export default function Navbar({ activePage = "home" }) {
             <a href={homeHref("#testimonials")} onClick={() => setMenuOpen(false)}>Testimonials</a>
           </li>
           <li>
-            <a
-              href={whatsappLink()}
+            <Link href="/contact" className={activePage === "contact" ? "active" : ""} onClick={() => setMenuOpen(false)}>
+              Contact
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/contact"
               className="btn-primary"
-              target="_blank"
-              rel="noopener"
               id="btn-lets-talk"
               onClick={() => setMenuOpen(false)}
             >
               Let&apos;s Talk
-            </a>
+            </Link>
           </li>
         </ul>
 

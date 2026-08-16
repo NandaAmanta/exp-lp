@@ -17,7 +17,7 @@ export default function StarCanvas() {
       canvas.width = parent ? parent.clientWidth || window.innerWidth : window.innerWidth;
       canvas.height = parent ? parent.clientHeight || window.innerHeight : window.innerHeight;
       stars = [];
-      const count = Math.min(70, Math.floor((canvas.width * canvas.height) / 8000));
+      const count = Math.min(38, Math.floor((canvas.width * canvas.height) / 16000));
       for (let i = 0; i < count; i++) {
         stars.push({
           x: Math.random() * canvas.width,
@@ -26,7 +26,7 @@ export default function StarCanvas() {
           op: Math.random() * 0.4 + 0.1,
           max: Math.random() * 0.25 + 0.5,
           min: Math.random() * 0.08 + 0.05,
-          speed: Math.random() * 0.004 + 0.001,
+          speed: Math.random() * 0.003 + 0.001,
           dir: 1,
         });
       }

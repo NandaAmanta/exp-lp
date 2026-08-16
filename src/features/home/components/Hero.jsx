@@ -12,18 +12,26 @@ export default function Hero() {
     const heroStats = statsRef.current;
     if (!heroStats) return;
 
-    function animateCounter(el, target, suffix) {
-      let start = 0;
-      const duration = 1800;
-      const step = Math.ceil(target / (duration / 16));
-      const update = () => {
-        start = Math.min(start + step, target);
-        el.textContent = start;
-        const span = document.createElement("span");
-        span.textContent = suffix;
-        el.appendChild(span);
-        if (start < target) requestAnimationFrame(update);
+    function animateCounter(el, target) {
+      const startTime = performance.now();
+      const duration = 1600;
+
+      const update = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // easeOutExpo
+        const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        const current = Math.floor(ease * target);
+        
+        el.textContent = current;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = target;
+        }
       };
+
       requestAnimationFrame(update);
     }
 
@@ -31,15 +39,15 @@ export default function Hero() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const statNumbers = heroStats.querySelectorAll(".hero-stat-number");
+            const statNumbers = heroStats.querySelectorAll(".stat-val");
             statNumbers.forEach((el, i) => {
-              animateCounter(el, HERO_STATS[i].target, HERO_STATS[i].suffix);
+              animateCounter(el, HERO_STATS[i].target);
             });
             statsObserver.disconnect();
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
 
     statsObserver.observe(heroStats);
@@ -82,7 +90,10 @@ export default function Hero() {
         <div className="hero-stats" ref={statsRef}>
           {HERO_STATS.map((s, i) => (
             <div className="hero-stat-item" key={i}>
-              <div className="hero-stat-number">0</div>
+              <div className="hero-stat-number">
+                <span className="stat-val">0</span>
+                <span>{s.suffix}</span>
+              </div>
               <div className="hero-stat-label">{s.label}</div>
             </div>
           ))}

@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"lib/hooks/useLenis.js -> lenis\":{\"id\":\"lib/hooks/useLenis.js -> lenis\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_lenis_dist_lenis_mjs.js\"]}}"

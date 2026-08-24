@@ -135,6 +135,21 @@ export default function ContactFormSection() {
 
   const [submitError, setSubmitError] = useState("");
 
+  const pushDataLayer = (actionType) => {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "form_submitted",
+        actionType: actionType, // Parameter 'type' otomatis bernilai 'email_form' atau 'whatsapp'
+        userData: {
+          fullName: document.getElementById("input-fullname")?.value || formData.name,
+          email: document.getElementById("input-email")?.value || formData.email,
+          phone: document.getElementById("input-phone")?.value || formData.phone,
+        },
+      });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -165,6 +180,7 @@ export default function ContactFormSection() {
         throw new Error(data.error || "Failed to submit inquiry. Please try again or reach us via WhatsApp.");
       }
 
+      pushDataLayer("email_form");
       setIsSubmitted(true);
     } catch (err) {
       console.error("Submission error:", err);
@@ -177,6 +193,8 @@ export default function ContactFormSection() {
   const handleSendViaWhatsApp = (e) => {
     e.preventDefault();
     if (!validate()) return;
+
+    pushDataLayer("whatsapp");
 
     const waText = `Hello Exp Digital Solution, I would like to consult on a software project:
 - *Name*: ${formData.name}
@@ -257,14 +275,14 @@ ${formData.message || "Looking to discuss bespoke software development for our e
               {/* Row 1: Name & Company Name */}
               <div className="form-row-2">
                 <div className="form-group">
-                  <label htmlFor="input-name" className="form-label">
+                  <label htmlFor="input-fullname" className="form-label">
                     Full Name / PIC <span className="form-label-required">*</span>
                   </label>
                   <div className="form-input-wrapper">
                     <User size={18} className="form-input-icon" />
                     <input
                       type="text"
-                      id="input-name"
+                      id="input-fullname"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}

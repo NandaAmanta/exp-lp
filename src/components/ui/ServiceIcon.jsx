@@ -17,6 +17,8 @@ import {
   Server,
   ShieldCheck,
   CheckCircle2,
+  Calendar,
+  MessageSquare,
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -38,6 +40,8 @@ const ICON_MAP = {
   Server,
   ShieldCheck,
   CheckCircle2,
+  Calendar,
+  MessageSquare,
 };
 
 export default function ServiceIcon({ name, size = 24, className = "", style = {} }) {

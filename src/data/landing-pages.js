@@ -446,6 +446,362 @@ export const LANDING_PAGES = [
       },
     ],
   },
+  {
+    slug: "software-gym-bali",
+    metaTitle: "Software Gym Bali | Sistem Manajemen Fitness, Check-in QR & POS | Exp Digital",
+    metaDescription:
+      "Software manajemen gym & fitness center terbaik di Bali. Check-in member QR code (< 2 detik), POS suplemen, jadwal personal trainer, dan laporan multi-cabang tanpa royalti bulanan.",
+    targetKeywords: [
+      "Software Gym Bali",
+      "Aplikasi Manajemen Gym Bali",
+      "Sistem Member Fitness Bali",
+      "Software Fitness Center Bali",
+      "Check-in QR Gym Bali",
+      "Software Kasir Gym",
+      "Gym Management System Bali",
+    ],
+    hero: {
+      geoBadge: "📍 Spesialis Software Gym & Fitness Management Bali",
+      title: "Software Gym Bali — Sistem Manajemen Fitness, Check-in QR & POS Suplemen",
+      highlightedTitle: "Real-Time Multi-Branch Control",
+      subtitle:
+        "Tingkatkan retensi member dan cegah kecurangan akses gym. Kami membangun sistem gym privat berbasis web & mobile dengan pemindaian QR instan, manajemen jadwal PT, dan pantauan omset 24/7.",
+      ctaPrimary: "Konsultasi Software Gym Anda",
+      ctaSecondary: "Lihat Implementasi Gorila Gym",
+    },
+    trustStats: [
+      { label: "Kecepatan Scan QR", value: "< 2 Detik" },
+      { label: "Kecurangan Akses", value: "0% (Dieliminasi)" },
+      { label: "Biaya Royalti Member", value: "Rp 0 (Aset Privat)" },
+      { label: "Akses Multi Cabang", value: "Real-Time 24/7" },
+    ],
+    painPoints: [
+      {
+        title: "Kecurangan Akses & Pinjam Kartu Fisik",
+        desc: "Catatan manual atau kartu fisik sering dipinjamkan ke teman non-member tanpa verifikasi status keaktifan paket langganan.",
+      },
+      {
+        title: "Buta Pantauan Operasional Multi-Cabang",
+        desc: "Owner harus mendatangi resepsionis setiap cabang secara manual untuk merekap omset harian, stok suplemen, dan jam ramai pengunjung.",
+      },
+      {
+        title: "Jadwal Personal Trainer (PT) yang Berantakan",
+        desc: "Pencatatan sesi trainer manual memicu jadwal bentrok, sisa kuota sesi hilang, dan sengketa perhitungan komisi trainer.",
+      },
+    ],
+    coreCapabilities: [
+      {
+        iconName: "Dumbbell",
+        title: "Instant Dynamic QR Code Member Check-in",
+        desc: "Pemindaian super cepat (< 2 detik) yang langsung memvalidasi masa aktif paket member dan membunyikan alarm jika masa berlaku habis.",
+      },
+      {
+        iconName: "Receipt",
+        title: "Integrated POS & Bar Suplemen",
+        desc: "Kasir cepat untuk penjualan membership baru, daily pass, minuman, dan suplemen fitness dengan pemotongan stok otomatis.",
+      },
+      {
+        iconName: "Calendar",
+        title: "Jadwal Personal Trainer & Komisi Otomatis",
+        desc: "Booking sesi latihan, countdown sisa kuota sesi klien, kalender jadwal trainer, dan kalkulasi komisi otomatis transparan.",
+      },
+      {
+        iconName: "Layers",
+        title: "Multi-Branch Executive Dashboard",
+        desc: "Pantau pertumbuhan pendapatan, jam kunjungan tersibuk, dan retensi member di seluruh cabang gym dalam satu layar dari mana saja.",
+      },
+      {
+        iconName: "MessageSquare",
+        title: "WhatsApp Auto-Reminder Perpanjangan",
+        desc: "Notifikasi otomatis ke WhatsApp member sebelum masa berlaku membership habis untuk memaksimalkan angka perpanjangan (renewal).",
+      },
+      {
+        iconName: "ShieldCheck",
+        title: "Audit Keuangan & Rekap Kasir Resepsionis",
+        desc: "Pencatatan uang laci kasir saat pergantian shift dan rekonsiliasi pembayaran QRIS/kartu debit tanpa celah selisih kas.",
+      },
+    ],
+    whyUs: [
+      {
+        title: "Tanpa Biaya Royalti Bulanan per Member",
+        desc: "Sistem diserahkan sebagai aset privat perusahaan Anda. Anda tidak perlu membayar biaya langganan bulanan per-member seperti software asing.",
+      },
+      {
+        title: "Terbukti Sukses di Gorila Gym & Sparco Gym",
+        desc: "Arsitektur kami terbukti tangguh mengelola operasional multi-cabang fitness chain terkemuka di Bali secara real-time.",
+      },
+      {
+        title: "Instalasi On-Site & Training Resepsionis",
+        desc: "Senior engineer kami hadir langsung di meja front-desk gym Anda di Bali untuk instalasi scanner dan melatih resepsionis.",
+      },
+      {
+        title: "PWA Digital Member Card",
+        desc: "Member tidak perlu mendownload aplikasi berat, kartu QR digital dapat dibuka langsung dari browser ponsel masing-masing.",
+      },
+    ],
+    relatedPortfolioSlugs: ["gorila-gym-bali", "sparco-gym"],
+    process: [
+      { step: "01", title: "Site Flow & Gate Assessment", desc: "Menganalisa alur masuk resepsionis, tier paket membership, dan sistem komisi trainer." },
+      { step: "02", title: "Setup Database & QR Scanner Engine", desc: "Konfigurasi register POS kasir, database member, dan integrasi layar scan QR." },
+      { step: "03", title: "Front-Desk & Trainer Onboarding", desc: "Pelatihan langsung untuk staf resepsionis, manajer gym, dan personal trainer." },
+      { step: "04", title: "Go-Live & Cloud Sync Multi Cabang", desc: "Peluncuran sistem dengan sinkronisasi cloud real-time antar cabang dan backup harian." },
+    ],
+    faqs: [
+      {
+        q: "Apakah member wajib mengunduh aplikasi di Play Store / App Store?",
+        a: "Tidak wajib. Member dapat mengakses kartu member QR digital langsung melalui browser smartphone mereka (PWA). Sistem juga tetap mendukung scanner barcode dan kartu RFID fisik jika dibutuhkan.",
+      },
+      {
+        q: "Apakah sistem mendukung pengelolaan gym dengan banyak cabang?",
+        a: "Sangat mendukung. Seperti pada implementasi Gorila Gym Bali, owner dapat melihat performa pendapatan tiap cabang secara terpisah maupun laporan konsolidasi gabungan secara real-time.",
+      },
+      {
+        q: "Apakah ada biaya tambahan jika jumlah member kami bertambah ribuan orang?",
+        a: "Tidak ada biaya royalti per member. Sistem adalah milik privat bisnis Anda, sehingga Anda bebas menambah ribuan member tanpa kenaikan biaya platform.",
+      },
+      {
+        q: "Bagaimana jika koneksi internet di gym sempat terputus?",
+        a: "Sistem dilengkapi fitur pencatatan lokal sementara (offline fallback) yang akan otomatis menyinkronkan data kembali ke server pusat begitu koneksi internet aktif kembali.",
+      },
+    ],
+  },
+  {
+    slug: "software-pos-kasir-bali",
+    metaTitle: "Software POS Kasir Bali | Aplikasi Kasir Multi Outlet & Stok | Exp Digital",
+    metaDescription:
+      "Software POS dan aplikasi kasir custom di Bali. Transaksi cepat (< 10 detik), sinkronisasi stok multi cabang, cetak struk thermal, barcode, dan rekap shift kasir presisi.",
+    targetKeywords: [
+      "Software POS Bali",
+      "Aplikasi Kasir Bali",
+      "Jasa Pembuatan Aplikasi Kasir Bali",
+      "Program Kasir Multi Outlet Bali",
+      "POS Kasir Percetakan Bali",
+      "Software Kasir Retail Bali",
+    ],
+    hero: {
+      geoBadge: "📍 Spesialis Aplikasi Kasir & POS Multi-Outlet Bali",
+      title: "Software POS Kasir Bali — Aplikasi Kasir Cepat, Multi Outlet & Stok Terintegrasi",
+      highlightedTitle: "Offline-First Reliability",
+      subtitle:
+        "Hilangkan antrean panjang dan selisih kas saat tutup shift. Kami membangun software kasir privat yang responsif, terintegrasi printer thermal, dan sinkron otomatis dengan stok gudang pusat.",
+      ctaPrimary: "Konsultasi Kebutuhan POS Kasir",
+      ctaSecondary: "Lihat Implementasi Ekaprint POS",
+    },
+    trustStats: [
+      { label: "Kecepatan Transaksi", value: "< 10 Detik" },
+      { label: "Akurasi Rekap Kasir", value: "99.9%" },
+      { label: "Biaya per Kasir", value: "Rp 0 Bulanan" },
+      { label: "Dukungan Hardware", value: "100% Kompatibel" },
+    ],
+    painPoints: [
+      {
+        title: "Kasir Lambat & Sering Lag di Jam Ramai",
+        desc: "Aplikasi POS cloud generik sering lag saat transaksi membludak, menimbulkan antrean mengular dan kekecewaan pembeli.",
+      },
+      {
+        title: "Selisih Uang Laci & Void Transaksi Tanpa Izin",
+        desc: "Ketiadaan audit ketat buka/tutup shift dan pembatalan pesanan tanpa pengawasan memicu kerugian finansial tersembunyi.",
+      },
+      {
+        title: "Koneksi Internet Putus Menghentikan Jualan",
+        desc: "Kasir web biasa mati total saat jaringan WiFi toko bermasalah, menghentikan seluruh transaksi jual-beli.",
+      },
+    ],
+    coreCapabilities: [
+      {
+        iconName: "Receipt",
+        title: "High-Speed Cashier Checkout (< 10s)",
+        desc: "Antarmuka intuitif layar sentuh & keyboard dengan pencarian produk kilat, barcode scanner, dan tombol shortcut transaksi cepat.",
+      },
+      {
+        iconName: "Layers",
+        title: "Sinkronisasi Stok Multi Outlet Real-Time",
+        desc: "Pemotongan otomatis stok gudang saat transaksi selesai, pelacakan transfer antar cabang, dan peringatan batas minimum stok.",
+      },
+      {
+        iconName: "ShieldCheck",
+        title: "Manajemen Shift & Rekap Kas Laci Presisi",
+        desc: "Pencatatan modal kas awal, kas keluar masuk operasional, dan laporan rekonsiliasi otomatis saat pergantian staf kasir.",
+      },
+      {
+        iconName: "Cpu",
+        title: "Integrasi Hardware Printer Thermal & Barcode",
+        desc: "Koneksi stabil ke printer thermal struk USB/Bluetooth/LAN, laci uang otomatis (cash drawer), dan scanner barcode.",
+      },
+      {
+        iconName: "Zap",
+        title: "Offline-First Local Storage (Anti Putus Sinyal)",
+        desc: "Kasir tetap dapat memproses transaksi penjualan meski internet toko offline dan otomatis tersinkronisasi saat sinyal kembali pulih.",
+      },
+      {
+        iconName: "BarChart2",
+        title: "Dashboard Laporan Omset & Produk Terlaris",
+        desc: "Grafik omset harian/bulanan, ranking produk paling laku, analisis jam sibuk, dan laporan laba kotor per kategori produk.",
+      },
+    ],
+    whyUs: [
+      {
+        title: "Bebas Biaya Lisensi per Tablet / Perangkat",
+        desc: "Anda bebas menambah 10+ meja kasir di berbagai outlet tanpa kenaikan biaya langganan bulanan perangkat.",
+      },
+      {
+        title: "Konektivitas Hardware Fleksibel",
+        desc: "Mendukung berbagai merek printer thermal (Epson, Xprinter, Iware, Sunmi), barcode scanner, dan cash drawer standar industri.",
+      },
+      {
+        title: "Fitur Promosi & Multi-Tier Pricing",
+        desc: "Mendukung skema harga grosir vs eceran, diskon kupon voucher, dan bundling paket promo kustom bisnis Anda.",
+      },
+      {
+        title: "Dukungan Teknisi On-Site di Bali",
+        desc: "Tim kami siap datang langsung ke toko / outlet Anda di Bali untuk instalasi hardware dan pendampingan kasir.",
+      },
+    ],
+    relatedPortfolioSlugs: ["ekaprint-bali", "gorila-gym-bali"],
+    process: [
+      { step: "01", title: "Hardware & Workflow Review", desc: "Menyesuaikan kebutuhan alur kasir dengan perangkat keras (PC, tablet, printer, scanner)." },
+      { step: "02", title: "Kustomisasi Logika & Skema Harga", desc: "Membangun formula diskon, harga bertingkat, split payment, dan hak akses otorisasi void." },
+      { step: "03", title: "Uji Stres Transaksi Cepat", desc: "Simulasi beban transaksi tinggi dan pengujian keandalan offline-online failover." },
+      { step: "04", title: "Instalasi Toko & Training Kasir", desc: "Pemasangan langsung di outlet Bali dan simulasi transaksi nyata bersama staf kasir." },
+    ],
+    faqs: [
+      {
+        q: "Bisa kah aplikasi POS ini berjalan di komputer PC kasir atau tablet Android?",
+        a: "Ya. Sistem kami dibangun dengan arsitektur web modern yang fleksibel digunakan pada komputer PC Windows/Mac, touchscreen POS terminal, tablet Android, maupun iPad.",
+      },
+      {
+        q: "Apa yang terjadi jika jaringan internet di toko mendadak mati?",
+        a: "Sistem dilengkapi teknologi Offline-First (IndexedDB local cache), sehingga kasir tetap bisa menginput pesanan dan mencetak struk secara normal. Begitu internet terhubung kembali, data otomatis tersinkron ke cloud.",
+      },
+      {
+        q: "Apakah sistem kasir mendukung pembayaran non-tunai seperti QRIS dan mesin EDC?",
+        a: "Ya. Sistem menampilkan QRIS statis/dinamis dan mencatat pembayaran kartu debit/kredit, transfer bank, dan dompet digital secara terpisah untuk rekonsiliasi yang rapi.",
+      },
+      {
+        q: "Bisakah sistem kasir dihubungkan langsung dengan alur produksi pabrik atau stok pusat?",
+        a: "Sangat bisa. Seperti yang kami bangun untuk Ekaprint Bali, pesanan kasir di bagian depan langsung terkirim otomatis ke antrean produksi di bagian belakang.",
+      },
+    ],
+  },
+  {
+    slug: "konsultan-it-bali",
+    metaTitle: "Konsultan IT Bali | Jasa IT Consultant & Audit Transformasi Digital | Exp Digital",
+    metaDescription:
+      "Konsultan IT profesional di Bali untuk transformasi digital, perancangan arsitektur cloud server, audit keamanan data, dan pengembangan software enterprise.",
+    targetKeywords: [
+      "Konsultan IT Bali",
+      "IT Consultant Bali",
+      "Jasa IT Support Perusahaan Bali",
+      "Jasa Audit IT Bali",
+      "Konsultan Transformasi Digital Bali",
+      "Cloud Infrastructure Bali",
+      "IT Solutions Bali",
+    ],
+    hero: {
+      geoBadge: "📍 Enterprise IT Consultant & Technology Partner Bali",
+      title: "Konsultan IT Bali — Transformasi Digital, Arsitektur Cloud & Solusi Software",
+      highlightedTitle: "Strategic Enterprise Engineering",
+      subtitle:
+        "Kami mendampingi pimpinan bisnis dan korporasi merancang blueprint teknologi yang efisien, aman, dan siap scale-up tanpa terjebak biaya lisensi vendor yang mahal.",
+      ctaPrimary: "Jadwalkan Sesi Konsultasi IT",
+      ctaSecondary: "Lihat Portofolio Solusi",
+    },
+    trustStats: [
+      { label: "Uptime Arsitektur", value: "99.9%" },
+      { label: "Penghematan Biaya IT", value: "Hingga 40%" },
+      { label: "Standar Keamanan", value: "Enterprise Grade" },
+      { label: "Dukungan On-Site", value: "Denpasar & Bali" },
+    ],
+    painPoints: [
+      {
+        title: "Investasi IT Mahal yang Tidak Menghasilkan Efisiensi",
+        desc: "Membeli paket software mahal dari vendor luar yang akhirnya tidak terpakai oleh staf karena terlalu rumit dan tidak cocok dengan alur kerja.",
+      },
+      {
+        title: "Infrastruktur Server Lambat & Rentan Kebocoran Data",
+        desc: "Server sering down saat jam sibuk, ketiadaan sistem backup otomatis, dan hak akses database yang tidak terenkripsi dengan baik.",
+      },
+      {
+        title: "Ketergantungan pada Developer Freelance Tanpa Dokumentasi",
+        desc: "Ketiadaan dokumentasi arsitektur resmi membuat perusahaan tersandera saat developer lama tidak lagi dapat dihubungi.",
+      },
+    ],
+    coreCapabilities: [
+      {
+        iconName: "Layers",
+        title: "Digital Transformation & Workflow Audit",
+        desc: "Audit menyeluruh terhadap software, infrastruktur, dan SOP perusahaan Anda untuk menemukan titik inefisiensi dan potensi kebocoran anggaran.",
+      },
+      {
+        iconName: "ShieldCheck",
+        title: "Arsitektur Cloud & Keamanan Database",
+        desc: "Perancangan server privat terisolasi (AWS, DigitalOcean, Cloudflare CDN) dengan enkripsi data, firewall ketat, dan backup otomatis.",
+      },
+      {
+        iconName: "Code2",
+        title: "Custom Enterprise Software Engineering",
+        desc: "Rekayasa solusi ERP, sistem informasi manajemen, portal web, dan aplikasi mobile yang dibuat presisi sesuai kebutuhan bisnis Anda.",
+      },
+      {
+        iconName: "BarChart2",
+        title: "Integrasi Sistem & Otomasi Lintas Divisi",
+        desc: "Menghubungkan aplikasi kasir, sistem gudang, mesin absensi biometrik, dan gateway pembayaran ke dalam satu ekosistem terpadu.",
+      },
+      {
+        iconName: "Cpu",
+        title: "Modernisasi Legacy System & Migrasi Data",
+        desc: "Memodernisasi sistem lama yang lambat ke teknologi web Next.js/Node.js modern tanpa mengganggu operasional harian yang sedang berjalan.",
+      },
+      {
+        iconName: "CheckCircle2",
+        title: "SLA Pemeliharaan & Monitoring Teknis",
+        desc: "Dukungan teknis berkala dengan Service Level Agreement (SLA) responsif untuk menjamin sistem Anda beroperasi 24/7 tanpa henti.",
+      },
+    ],
+    whyUs: [
+      {
+        title: "Pendekatan Pragmatis Berbasis ROI Nyata",
+        desc: "Kami tidak sekadar menjual teknologi canggih, melainkan solusi yang terbukti memangkas biaya operasional dan mempercepat perputaran bisnis Anda.",
+      },
+      {
+        title: "Diskusi Langsung dengan Senior Engineer",
+        desc: "Anda berkonsultasi langsung dengan arsitek software berpengalaman, bukan perantara sales yang tidak memahami aspek teknis.",
+      },
+      {
+        title: "Dokumentasi Lengkap & Full Handover",
+        desc: "Seluruh arsitektur, diagram relasi database (ERD), dan kredensial diserahkan seutuhnya untuk transparansi kepemilikan Anda.",
+      },
+      {
+        title: "Dukungan Tatap Muka di Bali",
+        desc: "Kemudahan koordinasi langsung untuk rapat dewan direksi, audit lapangan, dan pendampingan implementasi staf.",
+      },
+    ],
+    relatedPortfolioSlugs: ["stikes-bina-usada-bali", "ekaprint-bali", "packaging-bali"],
+    process: [
+      { step: "01", title: "IT Assessment & Discovery", desc: "Menganalisa infrastruktur yang ada, titik hambatan operasional, dan target transformasi digital." },
+      { step: "02", title: "Arsitektur & Tech Roadmap", desc: "Menyusun blueprint teknis, pemilihan stack server, skema database, dan estimasi milestone." },
+      { step: "03", title: "Eksekusi & Integrasi Sistem", desc: "Pengembangan software kustom, konfigurasi server cloud, dan pengujian keamanan." },
+      { step: "04", title: "Handover, Training & Maintenance", desc: "Serah terima aset lengkap, pelatihan tim internal, dan pendampingan pemeliharaan berkala." },
+    ],
+    faqs: [
+      {
+        q: "Kapan perusahaan kami membutuhkan jasa Konsultan IT?",
+        a: "Ketika operasional bisnis Anda mulai terhambat oleh pencatatan manual/Excel, software yang ada saat ini terlalu kaku, biaya langganan SaaS membengkak, atau Anda membutuhkan integrasi antar sistem lintas cabang.",
+      },
+      {
+        q: "Apakah Exp Digital Solution bisa mengaudit sistem yang sudah dibuat oleh vendor lain?",
+        a: "Bisa. Kami menyediakan layanan code review, security audit, dan arsitektur assessment untuk memeriksa kualitas kode, celah keamanan, dan performa database sistem Anda.",
+      },
+      {
+        q: "Bagaimana sistem kerja sama konsultasi IT di Exp Digital Solution?",
+        a: "Kami menawarkan skema kerja sama berbasis proyek (Project-Based Roadmap & Execution) maupun skema Retainer / Dedicated Technology Partner untuk pendampingan teknis jangka panjang.",
+      },
+      {
+        q: "Apakah konsultasi awal dikenakan biaya?",
+        a: "Sesi konsultasi arsitektur dan diskusi kebutuhan awal (30-45 menit) bersama tim senior engineer kami adalah gratis dan tanpa komitmen.",
+      },
+    ],
+  },
 ];
 
 export function getAllLandingPages() {

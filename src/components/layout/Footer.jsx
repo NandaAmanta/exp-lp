@@ -45,10 +45,11 @@ export default function Footer({ variant = "home" }) {
             <div className="footer-links-col">
               <Link href="/solutions/software-house-bali">Software House Bali</Link>
               <Link href="/solutions/jasa-pembuatan-erp-bali">Jasa Pembuatan ERP Bali</Link>
+              <Link href="/solutions/software-gym-bali">Software Gym Bali</Link>
+              <Link href="/solutions/software-pos-kasir-bali">Software POS Kasir Bali</Link>
+              <Link href="/solutions/konsultan-it-bali">Konsultan IT Bali</Link>
               <Link href="/solutions/jasa-pembuatan-website-bali">Jasa Website Bali</Link>
               <Link href="/solutions/jasa-pembuatan-aplikasi-bali">Aplikasi Mobile Bali</Link>
-              <Link href="/services/gym-management-system">Gym Management System</Link>
-              <Link href="/services/pos-and-retail-application">POS &amp; Retail Software</Link>
             </div>
           </div>
 

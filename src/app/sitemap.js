@@ -1,5 +1,6 @@
 import { PORTFOLIO_PROJECTS } from "@/data/portfolio";
 import { getAllServices } from "@/data/services";
+import { getAllLandingPages } from "@/data/landing-pages";
 
 export default function sitemap() {
   const baseUrl = "https://www.expdigitalsolution.com";
@@ -47,6 +48,14 @@ export default function sitemap() {
     priority: 0.9,
   }));
 
+  // Dynamic high-intent non-brand SEO solution landing pages
+  const solutionRoutes = getAllLandingPages().map((page) => ({
+    url: `${baseUrl}/solutions/${page.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.92,
+  }));
+
   // Dynamic portfolio case study routes
   const portfolioRoutes = PORTFOLIO_PROJECTS.map((project) => ({
     url: `${baseUrl}/portfolio/${project.slug}`,
@@ -55,6 +64,6 @@ export default function sitemap() {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...serviceRoutes, ...portfolioRoutes];
+  return [...staticRoutes, ...serviceRoutes, ...solutionRoutes, ...portfolioRoutes];
 }
 

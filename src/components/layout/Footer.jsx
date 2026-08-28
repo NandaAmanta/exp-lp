@@ -43,12 +43,12 @@ export default function Footer({ variant = "home" }) {
           <div>
             <div className="footer-col-title">Solutions</div>
             <div className="footer-links-col">
-              <Link href="/services/custom-internal-erp">Custom Internal ERP</Link>
+              <Link href="/solutions/software-house-bali">Software House Bali</Link>
+              <Link href="/solutions/jasa-pembuatan-erp-bali">Jasa Pembuatan ERP Bali</Link>
+              <Link href="/solutions/jasa-pembuatan-website-bali">Jasa Website Bali</Link>
+              <Link href="/solutions/jasa-pembuatan-aplikasi-bali">Aplikasi Mobile Bali</Link>
               <Link href="/services/gym-management-system">Gym Management System</Link>
               <Link href="/services/pos-and-retail-application">POS &amp; Retail Software</Link>
-              <Link href="/services/web-development">Web Development</Link>
-              <Link href="/services/web-ecommerce">Web E-Commerce</Link>
-              <Link href="/services/digital-ads-and-marketing">Digital Ads &amp; Marketing</Link>
             </div>
           </div>
 

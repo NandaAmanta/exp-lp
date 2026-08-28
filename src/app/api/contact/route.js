@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+export const dynamic = "force-dynamic";
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 const TARGET_EMAIL = "expgroupbali@gmail.com";
@@ -140,7 +142,7 @@ export async function POST(request) {
         ${
           phone
             ? `<a href="https://wa.me/${phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-                `Halo ${name} dari ${companyName}, terima kasih telah menghubungi EXP Digital Solution. Kami siap mendiskusikan kebutuhan ${service} untuk bisnis Anda.`
+                `Hello ${name} from ${companyName}, thank you for reaching out to EXP Digital Solution. We are ready to discuss your ${service} requirements for your business.`
               )}" class="btn-action" style="background: #25D366; color: #ffffff;">
                 💬 Chat on WhatsApp
               </a>`

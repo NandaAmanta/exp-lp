@@ -18,7 +18,7 @@ export default function Portfolio() {
             <Sparkles size={14} /> Our Work
           </span>
           <h2>Selected Works</h2>
-          <p>Lihat bagaimana kami mentransformasi ide bisnis menjadi platform digital fungsional & estetik.</p>
+          <p>Explore how we transform complex business requirements into high-performance, aesthetic digital platforms.</p>
           <div className="section-divider"></div>
         </div>
 
@@ -37,7 +37,7 @@ export default function Portfolio() {
                 <div className="home-portfolio-type-badge">{item.type}</div>
                 <div className="home-portfolio-overlay">
                   <Link href={`/portfolio/${item.slug}`} className="btn-visit" id={item.ctaId}>
-                    Lihat Case Study <ArrowRight size={16} />
+                    View Case Study <ArrowRight size={16} />
                   </Link>
                 </div>
               </div>

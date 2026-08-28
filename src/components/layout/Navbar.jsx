@@ -56,7 +56,9 @@ export default function Navbar({ activePage = "home" }) {
             </Link>
           </li>
           <li>
-            <a href={homeHref("#services")} onClick={() => setMenuOpen(false)}>Services</a>
+            <Link href="/services" className={activePage === "services" ? "active" : ""} onClick={() => setMenuOpen(false)}>
+              Services
+            </Link>
           </li>
           <li>
             <Link href="/portfolio" className={activePage === "portfolio" ? "active" : ""} onClick={() => setMenuOpen(false)}>

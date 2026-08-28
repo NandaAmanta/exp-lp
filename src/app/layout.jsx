@@ -35,7 +35,7 @@ const jsonLd = {
   logo: "https://www.expdigitalsolution.com/assets/exp-logo.png",
   image: "https://www.expdigitalsolution.com/assets/meta-banner.png",
   description:
-    "Exp Digital Solution adalah Software House Bali yang menyediakan layanan ERP Development, POS Systems, dan Gym Management System dengan harga kompetitif dan hasil berkualitas.",
+    "Exp Digital Solution is a premium Bali software house specializing in custom ERP development, POS retail systems, gym management software, and high-conversion web platforms.",
   address: {
     "@type": "PostalAddress",
     streetAddress: COMPANY.address.street,
@@ -49,12 +49,14 @@ const jsonLd = {
   priceRange: "$$",
   hasOfferCatalog: {
     "@type": "OfferCatalog",
-    name: "Layanan Pengembangan Software",
+    name: "Software & Digital Development Services",
     itemListElement: [
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "ERP Development (Enterprise Resource Planning)" } },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "POS (Point of Sale) System Development" } },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Gym Management System & Biometric Integration" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Custom ERP (Enterprise Resource Planning) Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Point of Sale (POS) & Retail System Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Gym Management System & Biometric QR Attendance" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Custom Web & Mobile Application Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "B2B E-Commerce & Product Catalog Development" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Performance Digital Advertising (Meta & Google Ads)" } },
     ],
   },
   sameAs: [COMPANY.social.instagram, COMPANY.social.medium, COMPANY.social.linkedin],

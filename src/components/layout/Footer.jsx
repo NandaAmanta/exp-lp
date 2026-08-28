@@ -28,30 +28,29 @@ export default function Footer({ variant = "home" }) {
             </div>
           )}
 
-          {isAbout ? (
+          <div>
+            <div className="footer-col-title">Navigation</div>
             <div className="footer-links-col">
-              <div className="footer-col-title">Navigation</div>
               <Link href="/">Home</Link>
               <Link href="/about">About Us</Link>
-              <Link href="/#services">Services</Link>
+              <Link href="/services">All Services</Link>
               <Link href="/portfolio">Portfolio</Link>
               <Link href="/contact">Contact</Link>
-              <Link href="/#blog">Blog</Link>
+              <Link href="/#blog">Blog &amp; Insights</Link>
             </div>
-          ) : (
-            <div>
-              <div className="footer-col-title">Navigation</div>
-              <div className="footer-links-col">
-                <Link href="#home">Home</Link>
-                <Link href="/about">About Us</Link>
-                <Link href="#services">Services</Link>
-                <Link href="/portfolio">Portfolio</Link>
-                <Link href="/contact">Contact</Link>
-                <Link href="#testimonials">Testimonials</Link>
-                <Link href="#blog">Blog</Link>
-              </div>
+          </div>
+
+          <div>
+            <div className="footer-col-title">Solutions</div>
+            <div className="footer-links-col">
+              <Link href="/services/custom-internal-erp">Custom Internal ERP</Link>
+              <Link href="/services/gym-management-system">Gym Management System</Link>
+              <Link href="/services/pos-and-retail-application">POS &amp; Retail Software</Link>
+              <Link href="/services/web-development">Web Development</Link>
+              <Link href="/services/web-ecommerce">Web E-Commerce</Link>
+              <Link href="/services/digital-ads-and-marketing">Digital Ads &amp; Marketing</Link>
             </div>
-          )}
+          </div>
 
           <div>
             <div className="footer-col-title">Get in Touch</div>

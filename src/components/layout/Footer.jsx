@@ -62,7 +62,14 @@ export default function Footer({ variant = "home" }) {
               </div>
               <div className="footer-contact-item">
                 <Phone />
-                <span>{COMPANY.whatsappDisplay}</span>
+                <a
+                  href={`https://wa.me/${COMPANY.whatsappNumber}`}
+                  target="_blank"
+                  rel="noopener"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  {COMPANY.whatsappDisplay}
+                </a>
               </div>
               <div className="footer-contact-item">
                 <Mail />

@@ -3,8 +3,8 @@
 export const COMPANY = {
   legalName: "PT EXP DIGITAL SOLUTION",
   shortName: "Exp Digital Solution",
-  whatsappNumber: "62895330667787",
-  whatsappDisplay: "+62 895 3306 7787",
+  whatsappNumber: "6285175025114",
+  whatsappDisplay: "+62 851-7502-5114",
   email: "expgroupbali@gmail.com",
   address: {
     street: "Jl. Raya Tojan Permai",

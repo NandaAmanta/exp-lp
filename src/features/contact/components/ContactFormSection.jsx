@@ -192,18 +192,20 @@ export default function ContactFormSection() {
 
   const handleSendViaWhatsApp = (e) => {
     e.preventDefault();
-    if (!validate()) return;
 
     pushDataLayer("whatsapp");
 
-    const waText = `Hello Exp Digital Solution, I would like to consult on a software project:
-- *Name*: ${formData.name}
-- *Company*: ${formData.companyName}
-- *Email*: ${formData.email}
+    const hasData = formData.name.trim() || formData.companyName.trim() || formData.message.trim();
+    const waText = hasData
+      ? `Hello Exp Digital Solution, I would like to consult on a software project:
+- *Name*: ${formData.name || "-"}
+- *Company*: ${formData.companyName || "-"}
+- *Email*: ${formData.email || "-"}
 - *Phone*: ${formData.phone || "-"}
 - *Service*: ${formData.service}
 - *Project Details*:
-${formData.message || "Looking to discuss bespoke software development for our enterprise."}`;
+${formData.message || "Looking to discuss bespoke software development for our enterprise."}`
+      : "Hello Exp Digital Solution, I would like to consult on a software development project for my business.";
 
     window.open(whatsappLink(waText), "_blank", "noopener,noreferrer");
   };

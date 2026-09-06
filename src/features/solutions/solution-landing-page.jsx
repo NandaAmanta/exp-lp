@@ -67,7 +67,7 @@ export default function SolutionLandingPage({ pageData }) {
                     letterSpacing: "0.4px",
                   }}
                 >
-                  <MapPin size={15} /> {pageData.hero.geoBadge}
+                  <MapPin size={15} /> {pageData.hero.geoBadge?.replace(/^📍\s*/, "")}
                 </span>
               </div>
 
@@ -81,10 +81,12 @@ export default function SolutionLandingPage({ pageData }) {
                   fontWeight: "800",
                 }}
               >
-                {pageData.hero.title.split("—")[0]}
+                {pageData.hero.title.split("—")[0].trim()}
                 <br />
                 <span className="text-accent">
-                  {pageData.hero.title.split("—")[1] ? `— ${pageData.hero.title.split("—")[1]}` : pageData.hero.highlightedTitle}
+                  {pageData.hero.title.split("—")[1]
+                    ? pageData.hero.title.split("—")[1].trim()
+                    : pageData.hero.highlightedTitle}
                 </span>
               </h1>
 
@@ -450,7 +452,7 @@ export default function SolutionLandingPage({ pageData }) {
             <div className="section-header text-center reveal active" style={{ maxWidth: "780px", margin: "0 auto 48px" }}>
               <span className="section-label">FAQ &amp; Pertanyaan Umum</span>
               <h2 style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.5rem)", marginBottom: "14px" }}>
-                Hal yang Sering Ditanyakan Mengenai <span className="text-accent">{pageData.hero.geoBadge.replace("📍 ", "")}</span>
+                Hal yang Sering Ditanyakan Mengenai <span className="text-accent">{pageData.hero.geoBadge?.replace(/^📍\s*/, "")}</span>
               </h2>
               <p style={{ color: "var(--text-secondary)", fontSize: "15px" }}>
                 Jawaban transparan seputar kepemilikan kode, integrasi sistem, estimasi biaya, dan garansi pemeliharaan.

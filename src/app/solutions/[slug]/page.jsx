@@ -112,7 +112,7 @@ export default function SolutionPage({ params }) {
       {
         "@type": "ListItem",
         position: 3,
-        name: pageData.hero.geoBadge.replace("📍 ", ""),
+        name: pageData.hero.geoBadge?.replace(/^📍\s*/, ""),
         item: canonicalUrl,
       },
     ],

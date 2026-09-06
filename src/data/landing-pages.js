@@ -14,7 +14,7 @@ export const LANDING_PAGES = [
       "Custom Software Development Bali",
     ],
     hero: {
-      geoBadge: "📍 Software House & IT Consultant Berbasis di Bali",
+      geoBadge: "Software House & IT Consultant Berbasis di Bali",
       title: "Software House Bali — Pengembangan Custom ERP, Sistem Operasional & Web Enterprise",
       highlightedTitle: "Built for Operational Scale",
       subtitle:
@@ -148,7 +148,7 @@ export const LANDING_PAGES = [
       "Custom ERP Software House",
     ],
     hero: {
-      geoBadge: "📍 Spesialis Pengembangan ERP & Otomasi Operasional Bali",
+      geoBadge: "Spesialis Pengembangan ERP & Otomasi Operasional Bali",
       title: "Jasa Pembuatan Sistem ERP Custom di Bali — 100% Sesuai Blueprint Bisnis",
       highlightedTitle: "Zero Recurring User License",
       subtitle:
@@ -252,7 +252,7 @@ export const LANDING_PAGES = [
       "SEO Friendly Website Bali",
     ],
     hero: {
-      geoBadge: "📍 Web Engineering & Digital Presence Bali",
+      geoBadge: "Web Engineering & Digital Presence Bali",
       title: "Jasa Pembuatan Website Perusahaan di Bali — Estetika Mewah, Cepat & SEO Dominan",
       highlightedTitle: "Google PageSpeed 90+ Score",
       subtitle:
@@ -356,7 +356,7 @@ export const LANDING_PAGES = [
       "Custom Mobile Software House",
     ],
     hero: {
-      geoBadge: "📍 Mobile Engineering & Cross-Platform Apps Bali",
+      geoBadge: "Mobile Engineering & Cross-Platform Apps Bali",
       title: "Jasa Pembuatan Aplikasi Mobile Android & iOS di Bali — Cepat, Fluid & Tangguh",
       highlightedTitle: "Native Performance 60fps",
       subtitle:
@@ -461,7 +461,7 @@ export const LANDING_PAGES = [
       "Gym Management System Bali",
     ],
     hero: {
-      geoBadge: "📍 Spesialis Software Gym & Fitness Management Bali",
+      geoBadge: "Spesialis Software Gym & Fitness Management Bali",
       title: "Software Gym Bali — Sistem Manajemen Fitness, Check-in QR & POS Suplemen",
       highlightedTitle: "Real-Time Multi-Branch Control",
       subtitle:
@@ -579,7 +579,7 @@ export const LANDING_PAGES = [
       "Software Kasir Retail Bali",
     ],
     hero: {
-      geoBadge: "📍 Spesialis Aplikasi Kasir & POS Multi-Outlet Bali",
+      geoBadge: "Spesialis Aplikasi Kasir & POS Multi-Outlet Bali",
       title: "Software POS Kasir Bali — Aplikasi Kasir Cepat, Multi Outlet & Stok Terintegrasi",
       highlightedTitle: "Offline-First Reliability",
       subtitle:
@@ -698,7 +698,7 @@ export const LANDING_PAGES = [
       "IT Solutions Bali",
     ],
     hero: {
-      geoBadge: "📍 Enterprise IT Consultant & Technology Partner Bali",
+      geoBadge: "Enterprise IT Consultant & Technology Partner Bali",
       title: "Konsultan IT Bali — Transformasi Digital, Arsitektur Cloud & Solusi Software",
       highlightedTitle: "Strategic Enterprise Engineering",
       subtitle:

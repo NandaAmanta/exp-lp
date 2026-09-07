@@ -24,6 +24,7 @@ export default function ContactFormSection() {
     phone: "",
     service: "Custom ERP Development",
     message: "",
+    _gotcha: "",
   });
 
   const [captchaToken, setCaptchaToken] = useState("");
@@ -150,12 +151,60 @@ export default function ContactFormSection() {
     }
   };
 
+  const sendLeadToInternal = async (sourceType = "email_form") => {
+    try {
+      const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const refCode =
+        urlParams?.get("ref_code") ||
+        urlParams?.get("ref") ||
+        urlParams?.get("utm_source") ||
+        "GOOGLE_ADS";
+
+      const nameValue = formData.name.trim() || (sourceType === "whatsapp" ? "Visitor (WhatsApp)" : "");
+      const descValue =
+        formData.message.trim() ||
+        (sourceType === "whatsapp" ? "Consultation via direct WhatsApp button" : "");
+
+      const endpoint = COMPANY.internalLeadsApi?.url || "https://internal.expdigitalsolution.com/api/v1/leads";
+      const apiKey = COMPANY.internalLeadsApi?.apiKey || "exp_5781bbc926a1428483f0ce5e819671ab";
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Api-Key": apiKey,
+        },
+        body: JSON.stringify({
+          name: nameValue,
+          company_name: formData.companyName.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          service_interest: formData.service || "Custom ERP Development",
+          description: descValue,
+          ref_code: refCode,
+          _gotcha: formData._gotcha || "", // Honeypot: wajib kosong untuk user asli!
+        }),
+      });
+
+      const result = await response.json();
+      return result;
+    } catch (err) {
+      // Non-blocking: catch and log so failures never block main email submission or WhatsApp flow
+      console.warn("Internal leads sync notice (non-blocking):", err);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
     setSubmitError("");
+
+    // Non-blocking sync to internal leads endpoint
+    sendLeadToInternal("email_form");
 
     try {
       const res = await fetch("/api/contact", {
@@ -195,6 +244,9 @@ export default function ContactFormSection() {
 
     pushDataLayer("whatsapp");
 
+    // Non-blocking sync to internal leads endpoint (fire-and-forget so window.open is not blocked)
+    sendLeadToInternal("whatsapp");
+
     const hasData = formData.name.trim() || formData.companyName.trim() || formData.message.trim();
     const waText = hasData
       ? `Hello Exp Digital Solution, I would like to consult on a software project:
@@ -220,6 +272,7 @@ ${formData.message || "Looking to discuss bespoke software development for our e
       phone: "",
       service: "Custom ERP Development",
       message: "",
+      _gotcha: "",
     });
     setCaptchaToken("");
     if (window.grecaptcha && widgetIdRef.current !== null) {
@@ -274,6 +327,20 @@ ${formData.message || "Looking to discuss bespoke software development for our e
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="contact-form-fields" noValidate>
+              {/* Honeypot field for anti-spam (must remain empty for legitimate users) */}
+              <div style={{ display: "none", position: "absolute", left: "-9999px" }} aria-hidden="true">
+                <label htmlFor="input-gotcha">Do not fill this field</label>
+                <input
+                  type="text"
+                  id="input-gotcha"
+                  name="_gotcha"
+                  value={formData._gotcha}
+                  onChange={handleChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
+
               {/* Row 1: Name & Company Name */}
               <div className="form-row-2">
                 <div className="form-group">

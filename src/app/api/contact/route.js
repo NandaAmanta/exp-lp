@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { sendMetaLeadEvent } from "@/lib/meta-capi";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,26 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "EXP Digital Solution <onboa
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, companyName, email, phone, service, message, captchaToken } = body;
+    const {
+      name,
+      companyName,
+      email,
+      phone,
+      service,
+      message,
+      captchaToken,
+      eventId,
+      fbp,
+      fbc,
+      eventSourceUrl,
+      params,
+    } = body;
+
+    const clientIp =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      null;
+    const userAgent = request.headers.get("user-agent") || null;
 
     // 1. Basic Field Validation
     if (!name || !companyName || !email) {
@@ -50,7 +70,28 @@ export async function POST(request) {
       }
     }
 
-    // 3. Send Email via Resend
+    // 3. Dispatch Meta Conversions API (CAPI) Event (Non-blocking & Fail-safe)
+    if (eventId) {
+      try {
+        await sendMetaLeadEvent({
+          eventId,
+          name,
+          email,
+          phone,
+          companyName,
+          service,
+          clientIp,
+          userAgent,
+          fbp,
+          fbc,
+          eventSourceUrl,
+        });
+      } catch (capiErr) {
+        console.warn("Meta CAPI dispatch notice (non-blocking):", capiErr);
+      }
+    }
+
+    // 4. Send Email via Resend
     if (!RESEND_API_KEY) {
       console.warn(
         "RESEND_API_KEY is not set in environment variables. Email simulation logged:",
@@ -134,6 +175,22 @@ export async function POST(request) {
       <div class="message-box">
         <p>${message ? message : "No additional description provided."}</p>
       </div>
+
+      ${
+        params && typeof params === "object" && Object.keys(params).length > 0
+          ? `
+      <div class="section-title">Campaign & Tracking Parameters</div>
+      <table class="info-table">
+        ${Object.entries(params)
+          .map(
+            ([key, val]) =>
+              `<tr><td class="label">${key}</td><td class="value">${val}</td></tr>`
+          )
+          .join("")}
+      </table>
+      `
+          : ""
+      }
 
       <div style="margin-top: 20px;">
         <a href="mailto:${email}?subject=Re:%20EXP%20Digital%20Solution%20Consultation%20for%20${encodeURIComponent(companyName)}" class="btn-action">

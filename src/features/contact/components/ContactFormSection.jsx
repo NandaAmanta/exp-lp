@@ -14,6 +14,7 @@ import {
   Lock,
 } from "lucide-react";
 import { COMPANY, whatsappLink } from "@/data/company";
+import { getOrResolveEventId, getMetaTrackingData } from "@/lib/client-tracking";
 
 export default function ContactFormSection() {
   // Form State
@@ -136,12 +137,14 @@ export default function ContactFormSection() {
 
   const [submitError, setSubmitError] = useState("");
 
-  const pushDataLayer = (actionType) => {
+  const pushDataLayer = (actionType, eventId) => {
     if (typeof window !== "undefined") {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: "form_submitted",
         actionType: actionType, // Parameter 'type' otomatis bernilai 'email_form' atau 'whatsapp'
+        eventID: eventId, // Parameter resmi Meta Pixel di GTM
+        event_id: eventId, // Variasi snake_case
         userData: {
           fullName: document.getElementById("input-fullname")?.value || formData.name,
           email: document.getElementById("input-email")?.value || formData.email,
@@ -151,14 +154,24 @@ export default function ContactFormSection() {
     }
   };
 
-  const sendLeadToInternal = async (sourceType = "email_form") => {
+  const sendLeadToInternal = async (sourceType = "email_form", trackingMeta = {}) => {
     try {
       const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-      const refCode =
-        urlParams?.get("ref_code") ||
-        urlParams?.get("ref") ||
-        urlParams?.get("utm_source") ||
-        "GOOGLE_ADS";
+      const refCode = urlParams?.get("ref_code") || null;
+
+      // Collect all query parameters from URL (e.g. UTM parameters, click IDs, refs)
+      const paramsData = { ...(trackingMeta.params || {}) };
+      if (urlParams) {
+        urlParams.forEach((value, key) => {
+          paramsData[key] = value;
+        });
+      }
+
+      // Enrich with Meta tracking parameters if available
+      if (trackingMeta.eventId && !paramsData.meta_event_id) paramsData.meta_event_id = trackingMeta.eventId;
+      if (trackingMeta.fbclid && !paramsData.fbclid) paramsData.fbclid = trackingMeta.fbclid;
+      if (trackingMeta.fbc && !paramsData.fbc) paramsData.fbc = trackingMeta.fbc;
+      if (trackingMeta.fbp && !paramsData.fbp) paramsData.fbp = trackingMeta.fbp;
 
       const nameValue = formData.name.trim() || (sourceType === "whatsapp" ? "Visitor (WhatsApp)" : "");
       const descValue =
@@ -182,8 +195,15 @@ export default function ContactFormSection() {
           phone: formData.phone.trim(),
           service_interest: formData.service || "Custom ERP Development",
           description: descValue,
-          ref_code: refCode,
+          ref_code: refCode || "",
           _gotcha: formData._gotcha || "", // Honeypot: wajib kosong untuk user asli!
+          // Meta Ads & Attribution Data
+          meta_event_id: trackingMeta.eventId || "",
+          fbclid: trackingMeta.fbclid || "",
+          fbc: trackingMeta.fbc || "",
+          fbp: trackingMeta.fbp || "",
+          // Full parameters payload for MySQL JSON column
+          params: paramsData,
         }),
       });
 
@@ -203,9 +223,38 @@ export default function ContactFormSection() {
     setIsSubmitting(true);
     setSubmitError("");
 
-    // Non-blocking sync to internal leads endpoint
-    sendLeadToInternal("email_form");
+    // 1. Resolve event_id (populated by GTM in #event_id input, or fallback) and Meta cookies
+    const eventId = getOrResolveEventId();
+    const metaData = getMetaTrackingData();
+    const eventSourceUrl = typeof window !== "undefined" ? window.location.href : "";
 
+    // Collect all query parameters from current URL
+    const paramsData = {};
+    if (typeof window !== "undefined" && window.location.search) {
+      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.forEach((val, key) => {
+          paramsData[key] = val;
+        });
+      } catch (err) {}
+    }
+    if (eventId && !paramsData.meta_event_id) paramsData.meta_event_id = eventId;
+    if (metaData.fbclid && !paramsData.fbclid) paramsData.fbclid = metaData.fbclid;
+    if (metaData.fbc && !paramsData.fbc) paramsData.fbc = metaData.fbc;
+    if (metaData.fbp && !paramsData.fbp) paramsData.fbp = metaData.fbp;
+
+    const trackingMeta = {
+      eventId,
+      fbp: metaData.fbp,
+      fbc: metaData.fbc,
+      fbclid: metaData.fbclid,
+      params: paramsData,
+    };
+
+    // 2. Non-blocking sync to internal leads endpoint (with Meta attribution & params JSON)
+    sendLeadToInternal("email_form", trackingMeta);
+
+    // 3. Dispatch to /api/contact (Resend email + Meta CAPI)
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -220,6 +269,11 @@ export default function ContactFormSection() {
           service: formData.service,
           message: formData.message.trim(),
           captchaToken: captchaToken,
+          eventId: eventId,
+          fbp: metaData.fbp,
+          fbc: metaData.fbc,
+          eventSourceUrl: eventSourceUrl,
+          params: paramsData,
         }),
       });
 
@@ -229,7 +283,7 @@ export default function ContactFormSection() {
         throw new Error(data.error || "Failed to submit inquiry. Please try again or reach us via WhatsApp.");
       }
 
-      pushDataLayer("email_form");
+      pushDataLayer("email_form", eventId);
       setIsSubmitted(true);
     } catch (err) {
       console.error("Submission error:", err);
@@ -237,29 +291,6 @@ export default function ContactFormSection() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleSendViaWhatsApp = (e) => {
-    e.preventDefault();
-
-    pushDataLayer("whatsapp");
-
-    // Non-blocking sync to internal leads endpoint (fire-and-forget so window.open is not blocked)
-    sendLeadToInternal("whatsapp");
-
-    const hasData = formData.name.trim() || formData.companyName.trim() || formData.message.trim();
-    const waText = hasData
-      ? `Hello Exp Digital Solution, I would like to consult on a software project:
-- *Name*: ${formData.name || "-"}
-- *Company*: ${formData.companyName || "-"}
-- *Email*: ${formData.email || "-"}
-- *Phone*: ${formData.phone || "-"}
-- *Service*: ${formData.service}
-- *Project Details*:
-${formData.message || "Looking to discuss bespoke software development for our enterprise."}`
-      : "Hello Exp Digital Solution, I would like to consult on a software development project for my business.";
-
-    window.open(whatsappLink(waText), "_blank", "noopener,noreferrer");
   };
 
   const handleResetForm = () => {
@@ -275,6 +306,8 @@ ${formData.message || "Looking to discuss bespoke software development for our e
       _gotcha: "",
     });
     setCaptchaToken("");
+    const eventIdInput = document.getElementById("event_id");
+    if (eventIdInput) eventIdInput.value = "";
     if (window.grecaptcha && widgetIdRef.current !== null) {
       try {
         window.grecaptcha.reset(widgetIdRef.current);
@@ -327,6 +360,14 @@ ${formData.message || "Looking to discuss bespoke software development for our e
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="contact-form-fields" noValidate>
+              {/* Hidden event_id input populated by GTM / Meta Pixel setup */}
+              <input
+                type="hidden"
+                id="event_id"
+                name="event_id"
+                defaultValue=""
+              />
+
               {/* Honeypot field for anti-spam (must remain empty for legitimate users) */}
               <div style={{ display: "none", position: "absolute", left: "-9999px" }} aria-hidden="true">
                 <label htmlFor="input-gotcha">Do not fill this field</label>
@@ -512,21 +553,6 @@ ${formData.message || "Looking to discuss bespoke software development for our e
                 >
                   <Send size={18} />
                   {isSubmitting ? "Sending Inquiry..." : "Submit Project Inquiry"}
-                </button>
-
-                <div style={{ textAlign: "center", color: "var(--text-dim)", fontSize: "0.85rem", margin: "2px 0" }}>
-                  — OR DIRECT CONSULTATION —
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSendViaWhatsApp}
-                  id="btn-send-to-whatsapp"
-                  className="whatsapp-direct-btn-large"
-                  style={{ margin: 0 }}
-                >
-                  <Phone size={18} />
-                  Send Inquiry via WhatsApp
                 </button>
               </div>
             </form>

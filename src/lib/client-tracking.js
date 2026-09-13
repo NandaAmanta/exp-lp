@@ -59,9 +59,18 @@ export function getOrResolveEventId() {
 
   let eventId = eventIdInput?.value?.trim();
 
-  // Also check if GTM placed it in window object
-  if (!eventId && (window.event_id || window.eventID)) {
-    eventId = String(window.event_id || window.eventID).trim();
+  // Guard: discard if value is "[object HTMLInputElement]" or invalid object serialization
+  if (eventId && (eventId.startsWith("[object ") || eventId === "undefined" || eventId === "null")) {
+    eventId = "";
+  }
+
+  // Check window object ONLY if explicitly a valid string (never cast DOM element window.event_id)
+  if (!eventId && typeof window !== "undefined") {
+    if (typeof window.eventID === "string" && window.eventID.trim() && !window.eventID.startsWith("[object ")) {
+      eventId = window.eventID.trim();
+    } else if (typeof window.meta_event_id === "string" && window.meta_event_id.trim() && !window.meta_event_id.startsWith("[object ")) {
+      eventId = window.meta_event_id.trim();
+    }
   }
 
   // Fallback: If GTM was blocked or hasn't filled the input, generate a safe unique ID
@@ -69,8 +78,8 @@ export function getOrResolveEventId() {
     eventId = `lead_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
-  // Ensure DOM element reflects the final eventId
-  if (eventIdInput && !eventIdInput.value) {
+  // Ensure DOM element reflects the final valid eventId
+  if (eventIdInput) {
     eventIdInput.value = eventId;
   }
 

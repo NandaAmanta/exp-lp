@@ -158,10 +158,7 @@ export default function ContactFormSection() {
     try {
       const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
       const refCode =
-        urlParams?.get("ref_code") ||
-        urlParams?.get("ref") ||
-        urlParams?.get("utm_source") ||
-        "GOOGLE_ADS";
+        urlParams?.get("ref_code") || '';
 
       // Collect all query parameters from URL (e.g. UTM parameters, click IDs, refs)
       const paramsData = { ...(trackingMeta.params || {}) };

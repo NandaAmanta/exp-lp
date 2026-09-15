@@ -5,7 +5,7 @@ export const COMPANY = {
   shortName: "Exp Digital Solution",
   whatsappNumber: "6285175025114",
   whatsappDisplay: "+62 851-7502-5114",
-  email: "expgroupbali@gmail.com",
+  email: "hello@expdigitalsolution.com",
   address: {
     street: "Jl. Raya Tojan Permai",
     full: "BTN Tojan Permai, Perum B Tn, Jl. Raya Tojan Permai No.c22, Pering, Kec. Blahbatuh, Kabupaten Gianyar, Bali 80581",

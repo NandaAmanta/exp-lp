@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-const TARGET_EMAIL = process.env.CONTACT_TARGET_EMAIL || COMPANY.email || "expgroupbali@gmail.com";
+const TARGET_EMAIL = process.env.CONTACT_TARGET_EMAIL || "expgroupbali@gmail.com";
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "EXP Digital Solution <onboarding@resend.dev>";
 
 export async function POST(request) {

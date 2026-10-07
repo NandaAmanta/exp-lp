@@ -37,6 +37,8 @@ export default function Navbar({ activePage = "home" }) {
             <img
               src="/assets/exp-logo.png"
               alt="Exp Digital Solution Logo"
+              width={48}
+              height={48}
               onError={() => setLogoError(true)}
             />
           ) : (

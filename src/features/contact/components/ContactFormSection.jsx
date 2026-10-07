@@ -35,7 +35,9 @@ export default function ContactFormSection() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const recaptchaContainerRef = useRef(null);
+  const formCardRef = useRef(null);
   const widgetIdRef = useRef(null);
+  const isScriptLoadingRef = useRef(false);
 
   // Initialize or Render Google reCAPTCHA
   const renderRecaptcha = useCallback(() => {
@@ -78,15 +80,11 @@ export default function ContactFormSection() {
     }
   }, []);
 
-  useEffect(() => {
-    // If form is submitted / hidden, reset widget ref and state
-    if (isSubmitted) {
-      widgetIdRef.current = null;
-      setIsCaptchaLoaded(false);
-      return;
-    }
+  // Lazy Load Google reCAPTCHA Script (On-Demand / Near Viewport / User Interaction)
+  const loadRecaptchaScript = useCallback(() => {
+    if (typeof window === "undefined") return;
 
-    // When form is mounted and active
+    // If script is already in window and grecaptcha is ready
     if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
       window.grecaptcha.ready(() => {
         renderRecaptcha();
@@ -94,7 +92,10 @@ export default function ContactFormSection() {
       return;
     }
 
-    // Set up global callback for initial script load
+    if (isScriptLoadingRef.current) return;
+    isScriptLoadingRef.current = true;
+
+    // Set up global callback
     window.onRecaptchaLoaded = () => {
       if (window.grecaptcha) {
         window.grecaptcha.ready(() => {
@@ -103,7 +104,7 @@ export default function ContactFormSection() {
       }
     };
 
-    // Load Google reCAPTCHA script if not already present
+    // Check if script tag already exists
     const existingScript = document.getElementById("google-recaptcha-script");
     if (!existingScript) {
       const script = document.createElement("script");
@@ -113,7 +114,6 @@ export default function ContactFormSection() {
       script.defer = true;
       document.head.appendChild(script);
     } else {
-      // Script tag exists but grecaptcha object is still initializing
       const interval = setInterval(() => {
         if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
           clearInterval(interval);
@@ -122,15 +122,51 @@ export default function ContactFormSection() {
           });
         }
       }, 100);
-      return () => clearInterval(interval);
+      setTimeout(() => clearInterval(interval), 10000);
+    }
+  }, [renderRecaptcha]);
+
+  useEffect(() => {
+    // If form is submitted / hidden, reset widget ref and state
+    if (isSubmitted) {
+      widgetIdRef.current = null;
+      setIsCaptchaLoaded(false);
+      return;
     }
 
+    // When grecaptcha is already loaded (e.g. from previous interaction or reset), render immediately
+    if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
+      window.grecaptcha.ready(() => {
+        renderRecaptcha();
+      });
+      return;
+    }
+
+    // 1. IntersectionObserver: trigger load when form is near viewport
+    let observer = null;
+    if (formCardRef.current && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            loadRecaptchaScript();
+            observer?.disconnect();
+          }
+        },
+        { rootMargin: "200px" }
+      );
+      observer.observe(formCardRef.current);
+    }
+
+    // 2. Idle timer fallback: load after 2.5s so initial FCP/LCP is untouched
+    const idleTimer = setTimeout(() => {
+      loadRecaptchaScript();
+    }, 2500);
+
     return () => {
-      if (window.onRecaptchaLoaded) {
-        delete window.onRecaptchaLoaded;
-      }
+      if (observer) observer.disconnect();
+      clearTimeout(idleTimer);
     };
-  }, [isSubmitted, renderRecaptcha]);
+  }, [isSubmitted, renderRecaptcha, loadRecaptchaScript]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -206,6 +242,12 @@ export default function ContactFormSection() {
       if (trackingMeta.fbc && !paramsData.fbc) paramsData.fbc = trackingMeta.fbc;
       if (trackingMeta.fbp && !paramsData.fbp) paramsData.fbp = trackingMeta.fbp;
 
+      // Sanitize fields to fit internal CRM validation constraints (max:100 chars)
+      const sanitizedFbc = trackingMeta.fbc ? String(trackingMeta.fbc).trim().slice(0, 100) : "";
+      const sanitizedFbp = trackingMeta.fbp ? String(trackingMeta.fbp).trim().slice(0, 100) : "";
+      const sanitizedEventId = trackingMeta.eventId ? String(trackingMeta.eventId).trim().slice(0, 100) : "";
+      const sanitizedRefCode = refCode ? String(refCode).trim().slice(0, 100) : "";
+
       const nameValue = formData.name.trim() || (sourceType === "whatsapp" ? "Visitor (WhatsApp)" : "");
       const descValue =
         formData.message.trim() ||
@@ -222,20 +264,18 @@ export default function ContactFormSection() {
           "X-Api-Key": apiKey,
         },
         body: JSON.stringify({
-          name: nameValue,
-          company_name: formData.companyName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          service_interest: formData.service || "Custom ERP Development",
+          name: nameValue.slice(0, 255),
+          company_name: formData.companyName.trim().slice(0, 255),
+          email: formData.email.trim().slice(0, 255),
+          phone: formData.phone.trim().slice(0, 50),
+          service_interest: (formData.service || "Custom ERP Development").slice(0, 255),
           description: descValue,
-          ref_code: refCode || "",
-          _gotcha: formData._gotcha || "", // Honeypot: wajib kosong untuk user asli!
-          // Meta Ads & Attribution Data
-          meta_event_id: trackingMeta.eventId || "",
+          ref_code: sanitizedRefCode,
+          _gotcha: formData._gotcha || "",
+          meta_event_id: sanitizedEventId,
           fbclid: trackingMeta.fbclid || "",
-          fbc: trackingMeta.fbc || "",
-          fbp: trackingMeta.fbp || "",
-          // Full parameters payload for MySQL JSON column
+          fbc: sanitizedFbc,
+          fbp: sanitizedFbp,
           params: paramsData,
         }),
       });
@@ -262,11 +302,12 @@ export default function ContactFormSection() {
     const eventSourceUrl = typeof window !== "undefined" ? window.location.href : "";
 
     // Collect all query parameters from current URL
+    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const refCode = urlParams?.get("ref_code") || "";
     const paramsData = {};
-    if (typeof window !== "undefined" && window.location.search) {
+    if (urlParams) {
       try {
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.forEach((val, key) => {
+        urlParams.forEach((val, key) => {
           paramsData[key] = val;
         });
       } catch (err) {}
@@ -276,18 +317,7 @@ export default function ContactFormSection() {
     if (metaData.fbc && !paramsData.fbc) paramsData.fbc = metaData.fbc;
     if (metaData.fbp && !paramsData.fbp) paramsData.fbp = metaData.fbp;
 
-    const trackingMeta = {
-      eventId,
-      fbp: metaData.fbp,
-      fbc: metaData.fbc,
-      fbclid: metaData.fbclid,
-      params: paramsData,
-    };
-
-    // 2. Non-blocking sync to internal leads endpoint (with Meta attribution & params JSON)
-    sendLeadToInternal("email_form", trackingMeta);
-
-    // 3. Dispatch to /api/contact (Resend email + Meta CAPI)
+    // 2. Dispatch to /api/contact (Server-side handles Resend email, Meta CAPI, and internal CRM sync)
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -305,6 +335,9 @@ export default function ContactFormSection() {
           eventId: eventId,
           fbp: metaData.fbp,
           fbc: metaData.fbc,
+          fbclid: metaData.fbclid,
+          refCode: refCode,
+          _gotcha: formData._gotcha,
           eventSourceUrl: eventSourceUrl,
           params: paramsData,
         }),
@@ -350,7 +383,7 @@ export default function ContactFormSection() {
     <section className="contact-form-section" style={{ position: "relative", zIndex: 2 }}>
       <div className="container">
         {/* Form Container (Clean, Centered, Widened to 940px) */}
-        <div className="contact-form-card" style={{ maxWidth: "940px", margin: "0 auto 60px auto" }}>
+        <div ref={formCardRef} id="contact-form-card" className="contact-form-card" style={{ maxWidth: "940px", margin: "0 auto 60px auto" }}>
           <div className="contact-form-header">
             <h3>Start Your Project Consultation</h3>
             <p>
@@ -390,7 +423,13 @@ export default function ContactFormSection() {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="contact-form-fields" noValidate>
+            <form
+              onSubmit={handleSubmit}
+              onFocus={loadRecaptchaScript}
+              onPointerDown={loadRecaptchaScript}
+              className="contact-form-fields"
+              noValidate
+            >
               {/* Hidden event_id input populated by GTM / Meta Pixel setup */}
               <input
                 type="hidden"

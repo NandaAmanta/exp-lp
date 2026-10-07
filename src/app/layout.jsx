@@ -1,6 +1,22 @@
 import Script from "next/script";
+import { Inter, Outfit } from "next/font/google";
 import { COMPANY } from "@/data/company";
+import "lenis/dist/lenis.css";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata = {
   metadataBase: new URL("https://www.expdigitalsolution.com"),
@@ -64,15 +80,8 @@ const jsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-        <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

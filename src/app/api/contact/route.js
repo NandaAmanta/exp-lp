@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { COMPANY } from "@/data/company";
 import { sendMetaLeadEvent } from "@/lib/meta-capi";
 
 export const dynamic = "force-dynamic";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-const TARGET_EMAIL = process.env.CONTACT_TARGET_EMAIL || "expgroupbali@gmail.com";
+const TARGET_EMAIL = process.env.CONTACT_TARGET_EMAIL || COMPANY.email || "expgroupbali@gmail.com";
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "EXP Digital Solution <onboarding@resend.dev>";
 
 export async function POST(request) {
@@ -23,6 +24,9 @@ export async function POST(request) {
       eventId,
       fbp,
       fbc,
+      fbclid,
+      refCode,
+      _gotcha,
       eventSourceUrl,
       params,
     } = body;
@@ -39,6 +43,16 @@ export async function POST(request) {
         { success: false, error: "Please fill in all required fields (Name, Company, Email)." },
         { status: 400 }
       );
+    }
+
+    // Anti-spam Honeypot Guard: bot submissions are silently processed without spamming inbox/CRM
+    if (_gotcha) {
+      console.warn("Honeypot _gotcha field was filled. Bot submission ignored.");
+      return NextResponse.json({
+        success: true,
+        simulated: true,
+        message: "Inquiry processed.",
+      });
     }
 
     // Email format validation
@@ -91,7 +105,83 @@ export async function POST(request) {
       }
     }
 
-    // 4. Send Email via Resend
+    // 4. Sync Lead to Internal CRM Leads API (Server-Side, Fail-safe)
+    let internalLeadResult = null;
+    try {
+      const endpoint =
+        process.env.INTERNAL_LEADS_API_URL ||
+        process.env.NEXT_PUBLIC_LEADS_API_URL ||
+        COMPANY.internalLeadsApi?.url ||
+        "https://internal.expdigitalsolution.com/api/v1/leads";
+      const apiKey =
+        process.env.INTERNAL_LEADS_API_KEY ||
+        process.env.NEXT_PUBLIC_LEADS_API_KEY ||
+        COMPANY.internalLeadsApi?.apiKey ||
+        "exp_5781bbc926a1428483f0ce5e819671ab";
+
+      const paramsData = { ...(params || {}) };
+      if (eventId && !paramsData.meta_event_id) paramsData.meta_event_id = eventId;
+      if (fbp && !paramsData.fbp) paramsData.fbp = fbp;
+      if (fbc && !paramsData.fbc) paramsData.fbc = fbc;
+      if (fbclid && !paramsData.fbclid) paramsData.fbclid = fbclid;
+      if (clientIp && !paramsData.client_ip) paramsData.client_ip = clientIp;
+
+      // CRITICAL FOR META ADS:
+      // The internal CRM API enforces strict validation:
+      // 'fbc' => 'max:100', 'fbp' => 'max:100', 'meta_event_id' => 'max:100', 'ref_code' => 'max:100'
+      // Meta Ads URLs generate fbc values that are frequently 110-250 characters long!
+      // When exceeding 100 characters, the API rejects the submission with HTTP 422.
+      // We truncate dedicated column values to 100 chars to satisfy database validation,
+      // while keeping the complete untruncated values safely preserved inside params JSON.
+      const sanitizedFbc = fbc ? String(fbc).trim().slice(0, 100) : "";
+      const sanitizedFbp = fbp ? String(fbp).trim().slice(0, 100) : "";
+      const sanitizedEventId = eventId ? String(eventId).trim().slice(0, 100) : "";
+      const resolvedRef = (refCode || paramsData.ref_code || paramsData.ref || "")
+        ? String(refCode || paramsData.ref_code || paramsData.ref).trim().slice(0, 100)
+        : "";
+
+      const resolvedFbclid =
+        fbclid ||
+        paramsData.fbclid ||
+        (typeof fbc === "string" && fbc.includes(".") ? fbc.split(".").pop() : "") ||
+        "";
+
+      const crmPayload = {
+        name: String(name).trim().slice(0, 255),
+        company_name: String(companyName).trim().slice(0, 255),
+        email: String(email).trim().slice(0, 255),
+        phone: phone ? String(phone).trim().slice(0, 50) : "",
+        service_interest: service ? String(service).trim().slice(0, 255) : "Custom ERP Development",
+        description: message ? String(message).trim() : "",
+        ref_code: resolvedRef,
+        _gotcha: "",
+        meta_event_id: sanitizedEventId,
+        fbclid: resolvedFbclid,
+        fbc: sanitizedFbc,
+        fbp: sanitizedFbp,
+        params: paramsData,
+      };
+
+      const crmRes = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Api-Key": apiKey,
+          "User-Agent": userAgent || "ExpDigitalSolution-Server/1.0",
+        },
+        body: JSON.stringify(crmPayload),
+      });
+
+      internalLeadResult = await crmRes.json();
+      if (!crmRes.ok || !internalLeadResult.success) {
+        console.warn("Internal CRM sync notice:", crmRes.status, internalLeadResult);
+      }
+    } catch (crmErr) {
+      console.warn("Internal CRM leads sync error (non-blocking):", crmErr);
+    }
+
+    // 5. Send Email via Resend
     if (!RESEND_API_KEY) {
       console.warn(
         "RESEND_API_KEY is not set in environment variables. Email simulation logged:",
@@ -100,6 +190,7 @@ export async function POST(request) {
       return NextResponse.json({
         success: true,
         simulated: true,
+        lead_id: internalLeadResult?.lead_id || null,
         message: "Inquiry processed (Simulated mode: Set RESEND_API_KEY in .env.local to dispatch live emails).",
       });
     }
@@ -235,6 +326,7 @@ export async function POST(request) {
     return NextResponse.json({
       success: true,
       id: sendResult.data?.id,
+      lead_id: internalLeadResult?.lead_id || null,
       message: "Inquiry sent successfully to sales team.",
     });
   } catch (error) {

@@ -13,14 +13,14 @@ export default function Footer({ variant = "home" }) {
             <div className="footer-brand">
               <Link href="/" aria-label="EXP Digital Solution Home">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/assets/exp-logo.png" alt="Exp Digital Solution Logo" className="footer-logo-img" />
+                <img src="/assets/exp-logo.png" alt="Exp Digital Solution Logo" width={46} height={46} className="footer-logo-img" />
               </Link>
               <p>Enterprise software development &amp; digital transformation agency based in Denpasar, Bali.</p>
             </div>
           ) : (
             <div className="footer-brand">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/assets/exp-logo.png" alt="Exp Digital Solution" className="footer-logo-img" />
+              <img src="/assets/exp-logo.png" alt="Exp Digital Solution" width={46} height={46} className="footer-logo-img" />
               <p>
                 {COMPANY.legalName} — A premium software house based in Denpasar, Bali. We engineer
                 scalable digital solutions that power modern businesses.

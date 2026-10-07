@@ -385,7 +385,7 @@ export default function ContactFormSection() {
         {/* Form Container (Clean, Centered, Widened to 940px) */}
         <div ref={formCardRef} id="contact-form-card" className="contact-form-card" style={{ maxWidth: "940px", margin: "0 auto 60px auto" }}>
           <div className="contact-form-header">
-            <h3>Start Your Project Consultation</h3>
+            <h2>Start Your Project Consultation</h2>
             <p>
               Tell us about your system requirements, operational workflows, or digital transformation goals. Our
               engineering team will review and respond within 2 hours.
@@ -640,7 +640,7 @@ export default function ContactFormSection() {
               <Clock size={24} />
             </div>
             <div className="trust-box-text">
-              <h5>Rapid Response (&lt; 2 Hours)</h5>
+              <h3>Rapid Response (&lt; 2 Hours)</h3>
               <p>Your technical requirements are reviewed directly by our software architects.</p>
             </div>
           </div>
@@ -650,7 +650,7 @@ export default function ContactFormSection() {
               <Lock size={24} />
             </div>
             <div className="trust-box-text">
-              <h5>NDA & Data Confidentiality</h5>
+              <h3>NDA & Data Confidentiality</h3>
               <p>All business logic, specifications, and project scope are protected under mutual NDA.</p>
             </div>
           </div>
@@ -660,7 +660,7 @@ export default function ContactFormSection() {
               <ShieldCheck size={24} />
             </div>
             <div className="trust-box-text">
-              <h5>100% Free Initial Discovery</h5>
+              <h3>100% Free Initial Discovery</h3>
               <p>Initial discovery consultation and architectural blueprint provided with zero upfront commitment.</p>
             </div>
           </div>

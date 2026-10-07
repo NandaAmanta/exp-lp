@@ -59,8 +59,16 @@ export default function StarCanvas() {
           if (entry.isIntersecting) {
             if (!isVisible) {
               isVisible = true;
-              init();
-              draw();
+              const startCanvas = () => {
+                if (!isVisible) return;
+                init();
+                draw();
+              };
+              if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+                window.requestIdleCallback(startCanvas, { timeout: 1500 });
+              } else {
+                setTimeout(startCanvas, 400);
+              }
             }
           } else {
             isVisible = false;

@@ -142,29 +142,26 @@ export default function ContactFormSection() {
       return;
     }
 
-    // 1. IntersectionObserver: trigger load when form is near viewport
-    let observer = null;
-    if (formCardRef.current && typeof IntersectionObserver !== "undefined") {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            loadRecaptchaScript();
-            observer?.disconnect();
-          }
-        },
-        { rootMargin: "200px" }
-      );
-      observer.observe(formCardRef.current);
-    }
-
-    // 2. Idle timer fallback: load after 2.5s so initial FCP/LCP is untouched
-    const idleTimer = setTimeout(() => {
+    // Load reCAPTCHA strictly on genuine human interaction (scroll, touch, click, keydown)
+    const handleUserInteraction = () => {
       loadRecaptchaScript();
-    }, 2500);
+      cleanup();
+    };
+
+    const cleanup = () => {
+      window.removeEventListener("scroll", handleUserInteraction);
+      window.removeEventListener("pointerdown", handleUserInteraction);
+      window.removeEventListener("touchstart", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+    };
+
+    window.addEventListener("scroll", handleUserInteraction, { passive: true, once: true });
+    window.addEventListener("pointerdown", handleUserInteraction, { passive: true, once: true });
+    window.addEventListener("touchstart", handleUserInteraction, { passive: true, once: true });
+    window.addEventListener("keydown", handleUserInteraction, { passive: true, once: true });
 
     return () => {
-      if (observer) observer.disconnect();
-      clearTimeout(idleTimer);
+      cleanup();
     };
   }, [isSubmitted, renderRecaptcha, loadRecaptchaScript]);
 
@@ -196,6 +193,9 @@ export default function ContactFormSection() {
     }
 
     if (!captchaToken) {
+      if (!isCaptchaLoaded) {
+        loadRecaptchaScript();
+      }
       newErrors.captcha = "Please complete the Google reCAPTCHA verification";
     }
 
@@ -586,12 +586,16 @@ export default function ContactFormSection() {
                   </span>
                 </div>
 
-                <div className="recaptcha-widget-wrapper">
+                <div
+                  className="recaptcha-widget-wrapper"
+                  onClick={loadRecaptchaScript}
+                  onPointerDown={loadRecaptchaScript}
+                >
                   <div ref={recaptchaContainerRef} id="g-recaptcha-container" />
                   {!isCaptchaLoaded && (
-                    <div className="recaptcha-loading-placeholder">
+                    <div className="recaptcha-loading-placeholder" style={{ cursor: "pointer" }}>
                       <div className="recaptcha-spinner" />
-                      <span>Loading Google reCAPTCHA...</span>
+                      <span>Security Verification (Click to verify)</span>
                     </div>
                   )}
                 </div>

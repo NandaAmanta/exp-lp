@@ -2128,7 +2128,8 @@ footer {
     transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
 }
 
-.reveal.visible {
+.reveal.visible,
+.reveal.active {
     opacity: 1;
     transform: translateY(0);
 }

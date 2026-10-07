@@ -11,7 +11,7 @@ export default function ContactHero() {
       <StarCanvas />
       <ShootingStars count={4} />
       <div className="container" style={{ position: "relative", zIndex: 3 }}>
-        <div className="page-hero-content reveal active">
+        <div className="page-hero-content">
           {/* Breadcrumbs */}
           <nav className="hero-breadcrumbs" aria-label="Breadcrumb">
             <Link href="/">Home</Link>
